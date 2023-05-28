@@ -1,0 +1,481 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<!-- Переключение IE в последнию версию, на случай если в настройках пользователя стоит меньшая -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<!-- Адаптирование страницы для мобильных устройств -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- Запрет распознования номера телефона -->
+	<meta name="format-detection" content="telephone=no">
+	<meta name="SKYPE_TOOLBAR" content ="SKYPE_TOOLBAR_PARSER_COMPATIBLE">
+
+	<!-- Заголовок страницы -->
+	<title>МЕДВА</title>
+
+	<!-- Данное значение часто используют(использовали) поисковые системы -->
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+
+	<!-- Традиционная иконка сайта, размер 16x16, прозрачность поддерживается. Рекомендуемый формат: .ico или .png -->
+	<link rel="shortcut icon" href="{% static 'img/layout/general/favicon.ico'%}">
+
+	<!-- Подключение файлов стилей -->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
+    <style>
+        .offer .quality__img {
+    width: 14vh;
+    margin-bottom: 15px;
+}
+
+    .chart-text {
+  font-size: 0.8vh;
+  fill: #D7D7D7;
+}
+
+.chart-number {
+  text-anchor: middle;
+      -moz-transform: translateY(0.25em);
+  -ms-transform: translateY(-.25em);
+  -webkit-transform: translateY(0.25em);
+  transform: translateY(0.25em);
+}
+
+.chart-label {
+  font-size: 0.2em;
+  text-transform: uppercase;
+  text-anchor: middle;
+  -moz-transform: translateY(0.7em);
+  -ms-transform: translateY(0.7em);
+  -webkit-transform: translateY(0.7em);
+  transform: translateY(0.7em);
+}
+.quality__img svg {
+    width: 100%;
+    height: 100%;
+}
+
+.qilin{
+    display: flex;
+    align-items: center;
+}
+.qil {
+    max-width: 300px;
+}
+.qit{
+    display: flex;
+    align-items: center;
+    font-weight: 200;
+    font-size: 1.8vh;
+    line-height: 1.25;
+    margin-bottom: 1.3vh;
+    color: #343434;
+}
+.qit.quality__green .quality__status {
+    background-color: #B5EAC1;
+}
+
+.qit.quality__yellow .quality__status {
+    background-color: #EAE8B5;
+}
+
+.qit.quality__red .quality__status {
+    background-color: #EAB5B5;
+}
+
+.qit.quality__gray .quality__status {
+    background-color: #D7D7D7;
+}
+
+.quality__status {
+    margin-right: 20px;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    border-radius: 5px;
+}
+.wrapper::before {
+    z-index: 5;
+}
+
+
+    </style>
+</head>
+<body>
+	<div class="inner">
+		<div class="wrapper">
+			<!-- Nav-->
+			<nav class="nav">
+				<a href="{% url 'main'%}" class="logo">
+					<img src="{% static 'img/layout/general/logo.svg'%}" alt="">
+				</a>
+				<ul class="nav__list">
+					<li class="nav__item">
+						<a href="{% url 'protocollistviewtotal'%}">Протоколы</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'makekitprotocol' %}">Загрузить протоколы</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'newreport'%}">Создать отчет</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'archive'%}">Архив отчетов</a>
+					</li>
+				</ul>
+			
+				<a href="" class="nav__exit">Выйти</a>
+			</nav>
+			<div class="wrap">
+				<!-- Header-->
+				<header class="header">
+					<div class="content">
+						<div class="header__inline">
+							<form action="" class="header__search">
+								<div class="header__input">
+									<input type="text">
+								</div>
+								<button class="header__btn">
+									<img src="{% static 'img/layout/general/search.png'%}" alt="">
+								</button>
+							</form>
+				
+							<a href="" class="account">
+								<div class="account__person">Иван Иванович</div>
+								<div class="account__img">
+									<img src="{% static 'img/content/general/profile.jpg'%}" alt="">
+								</div>
+							</a>
+						</div>
+					</div>
+				</header>
+				<main class="main">
+					<!-- offer-->
+					<section class="offer">
+						<div class="content">
+							<!-- Swiper -->
+							<div class="offer__swiper">
+								<div class="swiper-wrapper">
+
+
+                                    {% for clinic in cliniclist %}
+									<div class="swiper-slide">
+										<h1 class="offer__title page-title">{{ clinic.0.name }}</h1>
+					
+										<div class="offer__inline">
+											<div class="assignment">
+                                                <a href="{% url 'protocollistviewtotal'%}?excess=false&excesschange=true" class="assignment__item">
+													<div class="assignment__value">{% if clinic.1.lack %}{{ clinic.1.lack }}{% else %}0{% endif %}</div>
+													<div class="assignment__title">Недостающие назначения</div>
+												</a>
+												<a href="{% url 'protocollistviewtotal'%}?lack=false&lackchange=true" class="assignment__item">
+													<div class="assignment__value">{% if clinic.1.excess %}{{ clinic.1.excess }}{% else %}0{% endif %}</div>
+													<div class="assignment__title">Лишние назначения</div>
+												</a>
+											</div>
+					
+											<div class="offer__list">
+												<a href="{% url 'departments' clinic.0.clinic_id %}" class="offer__item">
+													<span>Список отделений</span>
+													<img src="{% static 'img/layout/general/plus.png'%}" alt="">
+												</a>
+												<a href="{% url 'doctors' clinic.0.clinic_id %}" class="offer__item">
+													<span>Список врачей</span>
+													<img src="{% static 'img/layout/general/doctor.png'%}" alt="">
+												</a>
+											</div>
+										</div>
+					
+										<div class="quality">
+											<div class="quality__head">
+												<h2 class="quality__title">Качество назначений</h2>
+                                    <div class="qilin">
+											<div class="qil">
+												<div class="qit quality__green">
+													<div class="quality__status"></div>
+													<div class="quality__subtitle">Корректные назначения</div>
+												</div>
+												<div class="qit quality__red">
+													<div class="quality__status"></div>
+													<div class="quality__subtitle">Лишние назначения</div>
+												</div>
+												<div class="qit quality__yellow">
+													<div class="quality__status"></div>
+													<div class="quality__subtitle">Недостающие назначения</div>
+												</div>
+												<div class="qit quality__gray">
+													<div class="quality__status"></div>
+													<div class="quality__subtitle">Все назначения</div>
+												</div>
+											</div>
+
+										</div>
+
+                                            </div>
+					
+											<div class="quality__list">
+												<div class="quality__item">
+													<div class="quality__img">
+{#														<img src="{% static 'img/layout/quality/quality-1.png'%}" alt="">#}
+                                                            <svg width="100%" height="100%" viewBox="0 0 36 36" class="donut">
+                                                              <circle class="donut-hole" cx="18" cy="18" r="15.91549430918954" fill="#fff"></circle>
+                                                              <circle class="donut-ring" cx="18" cy="18" r="15.91549430918954" fill="#d2d3d4" stroke="#d2d3d4" stroke-width="3"></circle>
+
+                                                              <circle id="part1d{{ clinic.0.clinic_id }}" class="donut-segment" cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#EAB5B5" stroke-width="3" stroke-dasharray="{{ clinic.2.0.0 }} {{ clinic.2.0.1 }}" stroke-dashoffset="{{ clinic.2.0.2 }}"></circle>
+                                                              <circle id='part2d{{ clinic.0.clinic_id }}' class="donut-segment" cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#EAE8B5" stroke-width="3" stroke-dasharray="{{ clinic.2.1.0 }} {{ clinic.2.1.1 }}" stroke-dashoffset="{{ clinic.2.1.2 }}"></circle>
+                                                              <circle id='part3d{{ clinic.0.clinic_id }}' class="donut-segment" cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#B5EAC1" stroke-width="3" stroke-dasharray="{{ clinic.2.2.0 }} {{ clinic.2.2.1 }}" stroke-dashoffset="{{ clinic.2.2.2 }}"></circle>
+                                                              <!-- unused 10% -->
+                                                                <circle class="donut-hole" cx="18" cy="18" r="15.91549430918954" fill="#fff"></circle>
+                                                              <g id="textpart1d{{ clinic.0.clinic_id }}" class="chart-text" style="display: none">
+                                                                <text x="50%" y="50%" class="chart-number">
+                                                                   <tspan fill="#EAB5B5">{{ clinic.2.3.0 }}</tspan>/{{ clinic.2.3.3 }}
+                                                                </text>
+                                                              </g>
+                                                                  <g id="textpart2d{{ clinic.0.clinic_id }}" class="chart-text" style="display: none">
+                                                                <text x="50%" y="50%" class="chart-number">
+                                                                   <tspan fill="#EAE8B5">{{ clinic.2.3.1 }}</tspan>/{{ clinic.2.3.3 }}
+                                                                </text>
+                                                              </g>
+                                                                  <g id="textpart3d{{ clinic.0.clinic_id }}" class="chart-text" style="display: none">
+                                                                <text x="50%" y="50%" class="chart-number">
+                                                                   <tspan fill="#B5EAC1">{{ clinic.2.3.2 }}</tspan>/{{ clinic.2.3.3 }}
+                                                                </text>
+                                                              </g>
+                                                            </svg>
+
+
+													</div>
+													<div class="quality__period">День</div>
+												</div>
+												<div class="quality__item">
+													<div class="quality__img">
+														 <svg width="100%" height="100%" viewBox="0 0 36 36" class="donut">
+                                                              <circle class="donut-hole" cx="18" cy="18" r="15.91549430918954" fill="#fff"></circle>
+                                                              <circle class="donut-ring" cx="18" cy="18" r="15.91549430918954" fill="#d2d3d4" stroke="#d2d3d4" stroke-width="3"></circle>
+
+                                                              <circle id="part1w{{ clinic.0.clinic_id }}" class="donut-segment" cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#EAB5B5" stroke-width="3" stroke-dasharray="{{ clinic.3.0.0 }} {{ clinic.3.0.1 }}" stroke-dashoffset="{{ clinic.3.0.2 }}"></circle>
+                                                              <circle id='part2w{{ clinic.0.clinic_id }}' class="donut-segment" cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#EAE8B5" stroke-width="3" stroke-dasharray="{{ clinic.3.1.0 }} {{ clinic.3.1.1 }}" stroke-dashoffset="{{ clinic.3.1.2 }}"></circle>
+                                                              <circle id='part3w{{ clinic.0.clinic_id }}' class="donut-segment" cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#B5EAC1" stroke-width="3" stroke-dasharray="{{ clinic.3.2.0 }} {{ clinic.3.2.1 }}" stroke-dashoffset="{{ clinic.3.2.2 }}"></circle>
+                                                              <!-- unused 10% -->
+                                                                <circle class="donut-hole" cx="18" cy="18" r="15.91549430918954" fill="#fff"></circle>
+                                                              <g id="textpart1w{{ clinic.0.clinic_id }}" class="chart-text" style="display: none">
+                                                                <text x="50%" y="50%" class="chart-number">
+                                                                   <tspan fill="#EAB5B5">{{ clinic.3.3.0 }}</tspan>/{{ clinic.3.3.3 }}
+                                                                </text>
+                                                              </g>
+                                                                  <g id="textpart2w{{ clinic.0.clinic_id }}" class="chart-text" style="display: none">
+                                                                <text x="50%" y="50%" class="chart-number">
+                                                                   <tspan fill="#EAE8B5">{{ clinic.3.3.1 }}</tspan>/{{ clinic.3.3.3 }}
+                                                                </text>
+                                                              </g>
+                                                                  <g id="textpart3w{{ clinic.0.clinic_id }}" class="chart-text" style="display: none">
+                                                                <text x="50%" y="50%" class="chart-number">
+                                                                   <tspan fill="#B5EAC1">{{ clinic.3.3.2 }}</tspan>/{{ clinic.3.3.3 }}
+                                                                </text>
+                                                              </g>
+                                                            </svg>
+													</div>
+													<div class="quality__period">Неделя</div>
+												</div>
+												<div class="quality__item">
+													<div class="quality__img">
+														<svg width="100%" height="100%" viewBox="0 0 36 36" class="donut">
+                                                              <circle class="donut-hole" cx="18" cy="18" r="15.91549430918954" fill="#fff"></circle>
+                                                              <circle class="donut-ring" cx="18" cy="18" r="15.91549430918954" fill="#d2d3d4" stroke="#d2d3d4" stroke-width="3"></circle>
+
+                                                              <circle id="part1m{{ clinic.0.clinic_id }}" class="donut-segment" cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#EAB5B5" stroke-width="3" stroke-dasharray="{{ clinic.4.0.0 }} {{ clinic.4.0.1 }}" stroke-dashoffset="{{ clinic.4.0.2 }}"></circle>
+                                                              <circle id='part2m{{ clinic.0.clinic_id }}' class="donut-segment" cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#EAE8B5" stroke-width="3" stroke-dasharray="{{ clinic.4.1.0 }} {{ clinic.4.1.1 }}" stroke-dashoffset="{{ clinic.4.1.2 }}"></circle>
+                                                              <circle id='part3m{{ clinic.0.clinic_id }}' class="donut-segment" cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#B5EAC1" stroke-width="3" stroke-dasharray="{{ clinic.4.2.0 }} {{ clinic.4.2.1 }}" stroke-dashoffset="{{ clinic.4.2.2 }}"></circle>
+                                                              <!-- unused 10% -->
+                                                                <circle class="donut-hole" cx="18" cy="18" r="15.91549430918954" fill="#fff"></circle>
+                                                              <g id="textpart1m{{ clinic.0.clinic_id }}" class="chart-text" style="display: none">
+                                                                <text x="50%" y="50%" class="chart-number">
+                                                                   <tspan fill="#EAB5B5">{{ clinic.4.3.0 }}</tspan>/{{ clinic.4.3.3 }}
+                                                                </text>
+                                                              </g>
+                                                                  <g id="textpart2m{{ clinic.0.clinic_id }}" class="chart-text" style="display: none">
+                                                                <text x="50%" y="50%" class="chart-number">
+                                                                   <tspan fill="#EAE8B5">{{ clinic.4.3.1 }}</tspan>/{{ clinic.4.3.3 }}
+                                                                </text>
+                                                              </g>
+                                                                  <g id="textpart3m{{ clinic.0.clinic_id }}" class="chart-text" style="display: none">
+                                                                <text x="50%" y="50%" class="chart-number">
+                                                                   <tspan fill="#B5EAC1">{{ clinic.4.3.2 }}</tspan>/{{ clinic.4.3.3 }}
+                                                                </text>
+                                                              </g>
+                                                            </svg>
+													</div>
+													<div class="quality__period">Месяц</div>
+												</div>
+												<div class="quality__item">
+													<div class="quality__img">
+														 <svg width="100%" height="100%" viewBox="0 0 36 36" class="donut">
+                                                              <circle class="donut-hole" cx="18" cy="18" r="15.91549430918954" fill="#fff"></circle>
+                                                              <circle class="donut-ring" cx="18" cy="18" r="15.91549430918954" fill="#d2d3d4" stroke="#d2d3d4" stroke-width="3"></circle>
+
+                                                              <circle id="part1y{{ clinic.0.clinic_id }}" class="donut-segment" cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#EAB5B5" stroke-width="3" stroke-dasharray="{{ clinic.5.0.0 }} {{ clinic.5.0.1 }}" stroke-dashoffset="{{ clinic.5.0.2 }}"></circle>
+                                                              <circle id='part2y{{ clinic.0.clinic_id }}' class="donut-segment" cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#EAE8B5" stroke-width="3" stroke-dasharray="{{ clinic.5.1.0 }} {{ clinic.5.1.1 }}" stroke-dashoffset="{{ clinic.5.1.2 }}"></circle>
+                                                              <circle id='part3y{{ clinic.0.clinic_id }}' class="donut-segment" cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#B5EAC1" stroke-width="3" stroke-dasharray="{{ clinic.5.2.0 }} {{ clinic.5.2.1 }}" stroke-dashoffset="{{ clinic.5.2.2 }}"></circle>
+                                                              <!-- unused 10% -->
+                                                                <circle class="donut-hole" cx="18" cy="18" r="15.91549430918954" fill="#fff"></circle>
+                                                              <g id="textpart1y{{ clinic.0.clinic_id }}" class="chart-text" style="display: none">
+                                                                <text x="50%" y="50%" class="chart-number">
+                                                                   <tspan fill="#EAB5B5">{{ clinic.5.3.0 }}</tspan>/{{ clinic.5.3.3 }}
+                                                                </text>
+                                                              </g>
+                                                                  <g id="textpart2y{{ clinic.0.clinic_id }}" class="chart-text" style="display: none">
+                                                                <text x="50%" y="50%" class="chart-number">
+                                                                   <tspan fill="#EAE8B5">{{ clinic.5.3.1 }}</tspan>/{{ clinic.5.3.3 }}
+                                                                </text>
+                                                              </g>
+                                                                  <g id="textpart3y{{ clinic.0.clinic_id }}" class="chart-text" style="display: none">
+                                                                <text x="50%" y="50%" class="chart-number">
+                                                                   <tspan fill="#B5EAC1">{{ clinic.5.3.2 }}</tspan>/{{ clinic.5.3.3 }}
+                                                                </text>
+                                                              </g>
+                                                            </svg>
+													</div>
+													<div class="quality__period">Год</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+                                    {% endfor %}
+
+{#									<div class="swiper-slide">#}
+{#										<h1 class="offer__title page-title">Клиника «Название»</h1>#}
+{#					#}
+{#										<div class="offer__inline">#}
+{#											<div class="assignment">#}
+{#												<a href="" class="assignment__item">#}
+{#													<div class="assignment__value">78</div>#}
+{#													<div class="assignment__title">Лишние назначения</div>#}
+{#												</a>#}
+{#												<a href="" class="assignment__item">#}
+{#													<div class="assignment__value">43</div>#}
+{#													<div class="assignment__title">Недостающие назначения</div>#}
+{#												</a>#}
+{#											</div>#}
+{#					#}
+{#											<div class="offer__list">#}
+{#												<a href="#" class="offer__item">#}
+{#													<span>Список отделений</span>#}
+{#													<img src="{% static 'img/layout/general/plus.png'%}" alt="">#}
+{#												</a>#}
+{#												<a href="#" class="offer__item">#}
+{#													<span>Список врачей</span>#}
+{#													<img src="{% static 'img/layout/general/doctor.png'%}" alt="">#}
+{#												</a>#}
+{#											</div>#}
+{#										</div>#}
+{#					#}
+{#										<div class="quality">#}
+{#											<div class="quality__head">#}
+{#												<h2 class="quality__title">Качество назначений</h2>#}
+{#												<p class="quality__desc">Статистика всех назначений, сделанных врачами в клинике за различные промежутки времени (день, неделя, месяц, год)</p>#}
+{#											</div>#}
+{#					#}
+{#											<div class="quality__list">#}
+{#												<div class="quality__item">#}
+{#													<div class="quality__img">#}
+{#														<img src="{% static 'img/layout/quality/quality-1.png'%}" alt="">#}
+{#													</div>#}
+{#													<div class="quality__period">День</div>#}
+{#												</div>#}
+{#												<div class="quality__item">#}
+{#													<div class="quality__img">#}
+{#														<img src="{% static 'img/layout/quality/quality-2.png'%}" alt="">#}
+{#													</div>#}
+{#													<div class="quality__period">Неделя</div>#}
+{#												</div>#}
+{#												<div class="quality__item">#}
+{#													<div class="quality__img">#}
+{#														<img src="{% static 'img/layout/quality/quality-2.png'%}" alt="">#}
+{#													</div>#}
+{#													<div class="quality__period">Месяц</div>#}
+{#												</div>#}
+{#												<div class="quality__item">#}
+{#													<div class="quality__img">#}
+{#														<img src="{% static 'img/layout/quality/quality-2.png'%}" alt="">#}
+{#													</div>#}
+{#													<div class="quality__period">Год</div>#}
+{#												</div>#}
+{#											</div>#}
+{#										</div>#}
+{#									</div>#}
+
+									
+								</div>
+								<!-- Add Arrows -->
+								<div class="offer__controls">
+									<div class="swiper-button-prev"></div>
+									<div class="swiper-button-next"></div>
+					    		</div>
+					    		<div class="swiper-pagination"></div>
+							</div>
+							
+						</div>
+					</section>
+				</main>
+			</div>
+		</div>
+
+
+	</div>
+	<link rel="stylesheet" type="text/css" href="{% static 'lib/swiper/swiper-bundle.min.css'%}">
+
+	<script src="{% static 'lib/jquery-3.6.3.min.js'%}"></script>
+	<script defer src="{% static 'lib/swiper/swiper-bundle.min.js'%}"></script>
+	<script defer src="{% static 'js/main.js'%}"></script>
+
+<script>
+    {% for clinic in cliniclist %}
+        {% for delta in clinic.6 %}
+
+    el1{{ delta }}{{ clinic.0.clinic_id }} = document.getElementById('part1{{ delta }}{{ clinic.0.clinic_id }}')
+    el1{{ delta }}{{ clinic.0.clinic_id }}.addEventListener('mouseover',function() { handleMouseOver('{{ delta }}{{ clinic.0.clinic_id }}', '1'); } );
+    el1{{ delta }}{{ clinic.0.clinic_id }}.addEventListener('mouseout', function() { handleMouseOut('1{{ delta }}{{ clinic.0.clinic_id }}'); } );
+
+
+    el2{{ delta }}{{ clinic.0.clinic_id }} = document.getElementById('part2{{ delta }}{{ clinic.0.clinic_id }}')
+    el2{{ delta }}{{ clinic.0.clinic_id }}.addEventListener('mouseover',function() { handleMouseOver('{{ delta }}{{ clinic.0.clinic_id }}', '2'); } );
+    el2{{ delta }}{{ clinic.0.clinic_id }}.addEventListener('mouseout', function() { handleMouseOut('2{{ delta }}{{ clinic.0.clinic_id }}'); } );
+
+    el3{{ delta }}{{ clinic.0.clinic_id }} = document.getElementById('part3{{ delta }}{{ clinic.0.clinic_id }}')
+    el3{{ delta }}{{ clinic.0.clinic_id }}.addEventListener('mouseover',function() { handleMouseOver('{{ delta }}{{ clinic.0.clinic_id }}', '3'); } );
+    el3{{ delta }}{{ clinic.0.clinic_id }}.addEventListener('mouseout', function() { handleMouseOut('3{{ delta }}{{ clinic.0.clinic_id }}'); } );
+
+
+{% endfor %}
+    {% endfor %}
+
+// Define the hover event handler
+function handleMouseOver(extraid, extraid2) {
+  // Code to execute when the element is hovered over
+    document.getElementById('textpart1' + extraid).style.display = 'none'
+    document.getElementById('textpart2' + extraid).style.display = 'none'
+    document.getElementById('textpart3' + extraid).style.display = 'none'
+
+    let textid= 'textpart' + extraid2 + extraid
+    document.getElementById(textid).style.display = 'block'
+  // Add your desired actions here
+}
+
+function handleMouseOut(extraid) {
+
+  // Code to execute when the mouse leaves the element
+
+    let textid= 'textpart' + extraid
+
+   document.getElementById(textid).style.display = 'none'
+}
+</script>
+
+<script></script>
+
+</body>
+</html>

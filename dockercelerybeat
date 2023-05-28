@@ -1,0 +1,37 @@
+# pull official base image
+FROM python:3.8.11
+
+RUN apt-get update && apt-get -y dist-upgrade
+
+
+# set environment varibles
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV SECRET_KEY ""
+ENV SQL_ENGINE "django.db.backends.postgresql"
+ENV SQL_DATABASE ""
+ENV SQL_USER ""
+ENV SQL_PASSWORD ""
+ENV SQL_HOST ""
+ENV SQL_PORT "6432"
+ENV DATABASE "postgres"
+ENV AWS_ACCESS_KEY_ID 
+ENV AWS_SECRET_ACCESS_KEY 
+ENV AWS_STORAGE_BUCKET_NAME 
+
+
+
+# set work directory
+WORKDIR /app
+
+EXPOSE 8000
+
+# install dependencies
+RUN pip3 install --upgrade pip setuptools wheel
+COPY ./medva/requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+
+# copy project
+COPY ./medva .
+
+CMD celery -A inmain beat --loglevel=INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler

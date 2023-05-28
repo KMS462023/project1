@@ -1,0 +1,23 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: medvaweb-deployment
+  labels:
+    app: medvaweb-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: medvaweb-service
+  template:
+    metadata:
+      labels:
+        app: medvaweb-service
+    spec:   
+      containers:
+        - name: medvaweb
+          image: cr.yandex/<>/medvaweb:__VERSION__
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000

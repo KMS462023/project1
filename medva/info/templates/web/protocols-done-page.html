@@ -1,0 +1,153 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<!-- Переключение IE в последнию версию, на случай если в настройках пользователя стоит меньшая -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<!-- Адаптирование страницы для мобильных устройств -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- Запрет распознования номера телефона -->
+	<meta name="format-detection" content="telephone=no">
+	<meta name="SKYPE_TOOLBAR" content ="SKYPE_TOOLBAR_PARSER_COMPATIBLE">
+
+	<!-- Заголовок страницы -->
+	<title>МЕДВА</title>
+
+	<!-- Данное значение часто используют(использовали) поисковые системы -->
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+
+	<!-- Традиционная иконка сайта, размер 16x16, прозрачность поддерживается. Рекомендуемый формат: .ico или .png -->
+	<link rel="shortcut icon" href="{% static 'img/layout/general/favicon.ico'%}">
+
+	<!-- Подключение файлов стилей -->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
+</head>
+<body>
+	<div class="inner">
+		<div class="wrapper">
+			<!-- Nav-->
+						<nav class="nav">
+				<a href="{% url 'main'%}" class="logo">
+					<img src="{% static 'img/layout/general/logo.svg'%}" alt="">
+				</a>
+				<ul class="nav__list">
+					<li class="nav__item">
+						<a href="{% url 'protocollistviewtotal'%}">Протоколы</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'makekitprotocol' %}">Загрузить протоколы</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'newreport'%}">Создать отчет</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'archive'%}">Архив отчетов</a>
+					</li>
+				</ul>
+			
+				<a href="" class="nav__exit">Выйти</a>
+			</nav>
+			<div class="wrap">
+				<!-- Header-->
+				<header class="header header-small">
+					<div class="content">
+						<div class="header__inline">
+				
+							<a href="" class="account">
+								<div class="account__person">Иван Иванович</div>
+								<div class="account__img">
+									<img src="{% static 'img/content/general/profile.jpg'%}" alt="">
+								</div>
+							</a>
+						</div>
+					</div>
+				</header>
+				<main class="main">
+					<!-- protocols-->
+					<section class="protocols protocols-done" id="readykit" style="display: block">
+						<div class="content">
+
+							<form action="" class="protocols__form" >
+								<div class="upload">
+									<label class="upload__label">
+										<span class="upload__start upload__item">
+											<img src="{% static 'img/layout/general/upload.png'%}" alt="">
+										  	<span class="upload__title">Форматы xls</span>
+									  	</span>
+					
+									  	<span class="upload__done upload__item">
+											<img src="{% static 'img/layout/general/upload-done.png'%}" alt="">
+										  	<span class="upload__title">Файл {{ kitjob.name }} загружен</span>
+									  	</span>
+
+							  		</label>  
+								</div>
+					
+								<div class="protocols__aside">
+									<h1 class="protocols__title page-title">Протоколы консультаций</h1>
+					
+									<a href="" class="protocols__btn button button-white">К странице протокола</a>
+								</div>
+							</form>
+					
+							<div class="protocols__list">
+								<a href="#" class="protocols__item">
+									<div class="protocols__num">0</div>
+									<div class="protocols__subtitle">Протоколов в файле</div>
+								</a>
+								<a href="#" class="protocols__item">
+									<div class="protocols__num">0</div>
+									<div class="protocols__subtitle">Лишних назначений</div>
+								</a>
+								<a href="#" class="protocols__item">
+									<div class="protocols__num">0</div>
+									<div class="protocols__subtitle">Недостающих назначений</div>
+								</a>
+								<a href="#" class="protocols__item">
+									<div class="protocols__num">0</div>
+									<div class="protocols__subtitle">Количество врачей</div>
+								</a>
+							</div>
+						</div>
+					</section>
+
+                    				<section class="loading" id="loadingkit" style="display: none">
+						<div class="content">
+
+							<div class="loading__inner" id="progresskit">
+								<div class="loading__title">Идёт загрузка...</div>
+								<img src="{% static 'img/layout/general/loading.png'%}" alt="">
+
+								<div class="bar bar__50">
+									<div class="bar__progress"></div>
+								</div>
+							</div>
+
+							<div class="loading__inner succes" id="kitdone" style="display: none">
+								<div class="loading__title">Протокол успешно загружен</div>
+								<img src="{% static 'img/layout/general/check-blue.png'%}" alt="">
+
+								<div class="bar bar__100">
+									<div class="bar__progress"></div>
+								</div>
+							</div>
+						</div>
+					</section>
+
+				</main>
+			</div>
+		</div>
+
+
+	</div>
+	<link rel="stylesheet" type="text/css" href="{% static 'lib/swiper/swiper-bundle.min.css'%}">
+
+	<script src="{% static 'lib/jquery-3.6.3.min.js'%}"></script>
+	<script defer src="{% static 'lib/swiper/swiper-bundle.min.js'%}"></script>
+	<script defer src="{% static 'js/main.js'%}"></script>
+</body>
+</html>

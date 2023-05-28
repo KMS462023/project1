@@ -1,0 +1,264 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<!-- Переключение IE в последнию версию, на случай если в настройках пользователя стоит меньшая -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<!-- Адаптирование страницы для мобильных устройств -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- Запрет распознования номера телефона -->
+	<meta name="format-detection" content="telephone=no">
+	<meta name="SKYPE_TOOLBAR" content ="SKYPE_TOOLBAR_PARSER_COMPATIBLE">
+
+	<!-- Заголовок страницы -->
+	<title>МЕДВА</title>
+
+	<!-- Данное значение часто используют(использовали) поисковые системы -->
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+
+	<!-- Традиционная иконка сайта, размер 16x16, прозрачность поддерживается. Рекомендуемый формат: .ico или .png -->
+	<link rel="shortcut icon" href="{% static 'img/layout/general/favicon.ico'%}">
+
+	<!-- Подключение файлов стилей -->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
+
+    <style>
+            .chart-text {
+  font-size: 0.8vh;
+  fill: #D7D7D7;
+}
+
+.chart-number {
+  text-anchor: middle;
+      -moz-transform: translateY(0.25em);
+  -ms-transform: translateY(-.25em);
+  -webkit-transform: translateY(0.25em);
+  transform: translateY(0.25em);
+}
+
+.chart-label {
+  font-size: 0.2em;
+  text-transform: uppercase;
+  text-anchor: middle;
+  -moz-transform: translateY(0.7em);
+  -ms-transform: translateY(0.7em);
+  -webkit-transform: translateY(0.7em);
+  transform: translateY(0.7em);
+}
+.diagramm svg {
+    width: 100%;
+    height: 100%;
+}
+
+.departments__subtitle{
+    max-width: 80%;
+}
+.wrapper::before {
+    z-index: 5;
+}
+    </style>
+
+</head>
+<body>
+	<div class="inner">
+		<div class="wrapper">
+			<!-- Nav-->
+						<nav class="nav">
+				<a href="{% url 'main'%}" class="logo">
+					<img src="{% static 'img/layout/general/logo.svg'%}" alt="">
+				</a>
+				<ul class="nav__list">
+					<li class="nav__item">
+						<a href="{% url 'protocollistviewtotal'%}">Протоколы</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'makekitprotocol' %}">Загрузить протоколы</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'newreport'%}">Создать отчет</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'archive'%}">Архив отчетов</a>
+					</li>
+				</ul>
+			
+				<a href="" class="nav__exit">Выйти</a>
+			</nav>
+			<div class="wrap">
+				<!-- Header-->
+				<header class="header header-small">
+					<div class="content">
+						<div class="header__inline">
+				
+							<a href="" class="account">
+								<div class="account__person">Иван Иванович</div>
+								<div class="account__img">
+									<img src="{% static 'img/content/general/profile.jpg'%}" alt="">
+								</div>
+							</a>
+						</div>
+					</div>
+				</header>
+				<main class="main">
+					<!-- departments-->
+					<section class="departments">
+						<div class="content">
+
+							<form method="get" class="departments__head">
+								<h1 class="departments__title page-title">Отделения</h1>
+								<div class="page__search">
+									<div class="page__input">
+										<input name="search" type="text">
+									</div>
+									<button class="page__search-btn">
+										<img src="{% static 'img/layout/general/search.png'%}" alt="">
+									</button>
+								</div>
+							</form>
+					
+							<div class="departments__list">
+                                {% for depart in cliniclist %}
+								<a href="{% url 'departmentboard' depart.0.clinic_department_id%}" class="departments__item">
+									<div class="departments__subtitle">{{ depart.0.department.name}}</div>
+					
+									<div class="departments__inline">
+										<div class="departments__inner">
+											<div class="departments__info">
+												<img src="{% static 'img/layout/general/doctor.png'%}" alt="">
+												<div>{{ depart.3 }}</div>
+											</div>
+											<div class="departments__info">
+												<img src="{% static 'img/layout/general/list.png'%}" alt="">
+												<div>{{ depart.2 }}</div>
+											</div>
+										</div>
+					
+										<div class="diagramm">
+											 <svg width="100%" height="100%" viewBox="0 0 36 36" class="donut">
+                                                              <circle class="donut-hole" cx="18" cy="18" r="15.91549430918954" fill="#fff"></circle>
+                                                              <circle class="donut-ring" cx="18" cy="18" r="15.91549430918954" fill="#d2d3d4" stroke="#d2d3d4" stroke-width="3"></circle>
+
+                                                              <circle id="part1d{{ depart.0.clinic_department_id }}" class="donut-segment" cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#EAB5B5" stroke-width="3" stroke-dasharray="{{ depart.1.0.0 }} {{ depart.1.0.1 }}" stroke-dashoffset="{{ depart.1.0.2 }}"></circle>
+                                                              <circle id='part2d{{ depart.0.clinic_department_id }}' class="donut-segment" cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#EAE8B5" stroke-width="3" stroke-dasharray="{{ depart.1.1.0 }} {{ depart.1.1.1 }}" stroke-dashoffset="{{ depart.1.1.2 }}"></circle>
+                                                              <circle id='part3d{{ depart.0.clinic_department_id }}' class="donut-segment" cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#B5EAC1" stroke-width="3" stroke-dasharray="{{ depart.1.2.0 }} {{ depart.1.2.1 }}" stroke-dashoffset="{{ depart.1.2.2 }}"></circle>
+                                                              <!-- unused 10% -->
+                                                                <circle class="donut-hole" cx="18" cy="18" r="15.91549430918954" fill="#fff"></circle>
+                                                              <g id="textpart1d{{ depart.0.clinic_department_id }}" class="chart-text" style="display: none">
+                                                                <text x="50%" y="50%" class="chart-number">
+                                                                   <tspan fill="#EAB5B5">{{ depart.1.3.0 }}</tspan>/{{ depart.1.3.3 }}
+                                                                </text>
+                                                              </g>
+                                                                  <g id="textpart2d{{ depart.0.clinic_department_id }}" class="chart-text" style="display: none">
+                                                                <text x="50%" y="50%" class="chart-number">
+                                                                   <tspan fill="#EAE8B5">{{ depart.1.3.1 }}</tspan>/{{ depart.1.3.3 }}
+                                                                </text>
+                                                              </g>
+                                                                  <g id="textpart3d{{ depart.0.clinic_department_id }}" class="chart-text" style="display: none">
+                                                                <text x="50%" y="50%" class="chart-number">
+                                                                   <tspan fill="#B5EAC1">{{ depart.1.3.2 }}</tspan>/{{ depart.1.3.3 }}
+                                                                </text>
+                                                              </g>
+                                                            </svg>
+
+										</div>
+									</div>
+								</a>
+                                {% endfor %}
+					
+
+							</div>
+					
+								<ul class="pagination">
+                                    {% if cliniclist.has_previous %}
+                                        {% if cliniclist.previous_page_number != 1 %}
+                                        <li class="pagination__item">
+										<a href="?page=1">1</a>
+									    </li>
+                                        <li class="pagination__item">
+										...
+									</li>
+                                            {% endif %}
+                                        <li class="pagination__item">
+										<a href="?page={{ cliniclist.previous_page_number }}">{{ cliniclist.previous_page_number }}</a>
+									    </li>
+                                    {% endif %}
+									<li class="pagination__item pagination__active">
+										<a href="?page={{ cliniclist.number }}">{{ cliniclist.number }}</a>
+									</li>
+                                 {% if cliniclist.has_next %}
+                                        {% if cliniclist.next_page_number != cliniclist.paginator.num_pages %}
+                                        <li class="pagination__item">
+										<a href="?page={{ cliniclist.next_page_number }}">{{ cliniclist.next_page_number }}</a>
+									    </li>
+                                        <li class="pagination__item">
+										...
+									</li>
+                                            {% endif %}
+                                        <li class="pagination__item">
+										<a href="?page={{ cliniclist.paginator.num_pages }}">{{ cliniclist.paginator.num_pages }}</a>
+									    </li>
+                                    {% endif %}
+								</ul>
+						</div>
+					</section>
+				</main>
+			</div>
+		</div>
+
+
+	</div>
+	<link rel="stylesheet" type="text/css" href="{% static 'lib/swiper/swiper-bundle.min.css'%}">
+	
+	<script src="{% static 'lib/jquery-3.6.3.min.js'%}"></script>
+	<script defer src="{% static 'lib/swiper/swiper-bundle.min.js'%}"></script>
+	<script defer src="{% static 'js/main.js'%}"></script>
+
+<script>
+    {% for depart in cliniclist %}
+    
+
+    el1d{{ depart.0.clinic_department_id }} = document.getElementById('part1d{{ depart.0.clinic_department_id }}')
+    el1d{{ depart.0.clinic_department_id }}.addEventListener('mouseover',function() { handleMouseOver('d{{ depart.0.clinic_department_id }}', '1'); } );
+    el1d{{ depart.0.clinic_department_id }}.addEventListener('mouseout', function() { handleMouseOut('1d{{ depart.0.clinic_department_id }}'); } );
+
+
+    el2d{{ depart.0.clinic_department_id }} = document.getElementById('part2d{{ depart.0.clinic_department_id }}')
+    el2d{{ depart.0.clinic_department_id }}.addEventListener('mouseover',function() { handleMouseOver('d{{ depart.0.clinic_department_id }}', '2'); } );
+    el2d{{ depart.0.clinic_department_id }}.addEventListener('mouseout', function() { handleMouseOut('2d{{ depart.0.clinic_department_id }}'); } );
+
+    el3d{{ depart.0.clinic_department_id }} = document.getElementById('part3d{{ depart.0.clinic_department_id }}')
+    el3d{{ depart.0.clinic_department_id }}.addEventListener('mouseover',function() { handleMouseOver('d{{ depart.0.clinic_department_id }}', '3'); } );
+    el3d{{ depart.0.clinic_department_id }}.addEventListener('mouseout', function() { handleMouseOut('3d{{ depart.0.clinic_department_id }}'); } );
+
+
+
+    {% endfor %}
+
+// Define the hover event handler
+function handleMouseOver(extraid, extraid2) {
+  // Code to execute when the element is hovered over
+    document.getElementById('textpart1' + extraid).style.display = 'none'
+    document.getElementById('textpart2' + extraid).style.display = 'none'
+    document.getElementById('textpart3' + extraid).style.display = 'none'
+
+    let textid= 'textpart' + extraid2 + extraid
+    document.getElementById(textid).style.display = 'block'
+  // Add your desired actions here
+}
+
+function handleMouseOut(extraid) {
+
+  // Code to execute when the mouse leaves the element
+
+    let textid= 'textpart' + extraid
+
+   document.getElementById(textid).style.display = 'none'
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,432 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<!-- Переключение IE в последнию версию, на случай если в настройках пользователя стоит меньшая -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<!-- Адаптирование страницы для мобильных устройств -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- Запрет распознования номера телефона -->
+	<meta name="format-detection" content="telephone=no">
+	<meta name="SKYPE_TOOLBAR" content ="SKYPE_TOOLBAR_PARSER_COMPATIBLE">
+
+	<!-- Заголовок страницы -->
+	<title>МЕДВА</title>
+
+	<!-- Данное значение часто используют(использовали) поисковые системы -->
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+
+	<!-- Традиционная иконка сайта, размер 16x16, прозрачность поддерживается. Рекомендуемый формат: .ico или .png -->
+	<link rel="shortcut icon" href="{% static 'img/layout/general/favicon.ico'%}">
+
+	<!-- Подключение файлов стилей -->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
+
+    <style>
+
+
+    .chart-text {
+  font-size: 0.8vh;
+  fill: #D7D7D7;
+}
+
+.chart-number {
+  text-anchor: middle;
+      -moz-transform: translateY(0.25em);
+  -ms-transform: translateY(-.25em);
+  -webkit-transform: translateY(0.25em);
+  transform: translateY(0.25em);
+}
+
+.chart-label {
+  font-size: 0.2em;
+  text-transform: uppercase;
+  text-anchor: middle;
+  -moz-transform: translateY(0.7em);
+  -ms-transform: translateY(0.7em);
+  -webkit-transform: translateY(0.7em);
+  transform: translateY(0.7em);
+}
+.diagramm svg {
+    width: 100%;
+    height: 100%;
+}
+
+
+
+.wrapper::before {
+    z-index: 5;
+}
+        .page-title{
+            display: flex;
+        }
+        .page-title img{
+                width: 5vh;
+    flex-shrink: 0;
+    margin-right: 30px;
+            align-self: center;
+        }
+
+    </style>
+
+</head>
+<body>
+	<div class="inner">
+		<div class="wrapper">
+			<!-- Nav-->
+						<nav class="nav">
+				<a href="{% url 'main'%}" class="logo">
+					<img src="{% static 'img/layout/general/logo.svg'%}" alt="">
+				</a>
+				<ul class="nav__list">
+					<li class="nav__item">
+						<a href="{% url 'protocollistviewtotal'%}">Протоколы</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'makekitprotocol' %}">Загрузить протоколы</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'newreport'%}">Создать отчет</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'archive'%}">Архив отчетов</a>
+					</li>
+				</ul>
+			
+				<a href="" class="nav__exit">Выйти</a>
+			</nav>
+			<div class="wrap">
+				<!-- Header-->
+				<header class="header header-small">
+					<div class="content">
+						<div class="header__inline">
+				
+							<a href="" class="account">
+								<div class="account__person">Иван Иванович</div>
+								<div class="account__img">
+									<img src="{% static 'img/content/general/profile.jpg'%}" alt="">
+								</div>
+							</a>
+						</div>
+					</div>
+				</header>
+				<main class="main">
+					<!-- protocol-->
+					<section class="protocols protocols__inside">
+						<div class="content">
+							<h1 class="protocols__title page-title"> <a href="javascript:history.back()" style="align-self: center"><img src="{% static 'img/layout/general/slide-prev.png'%}" alt=""></a>Протокол №{{ protocol.protocol_id }}</h1>
+					
+							<form action="" method="post" enctype="multipart/form-data" id="form1" class="info">
+                            {% csrf_token %}
+								<div class="info__left">
+									<ul class="info__list">
+										<li class="info__item">
+											<img src="{% static 'img/layout/general/doctor.png'%}" alt="">
+											<span>{{ protocol.doctor.name }}</span>
+										</li>
+										<li class="info__item">
+											<img src="{% static 'img/layout/general/plus.png'%}" alt="">
+											<span>{{ protocol.clinic_department.department.name}}</span>
+										</li>
+										<li class="info__item">
+											<img src="{% static 'img/layout/general/label.png'%}" alt="">
+											<span>{{ protocol.specialization.name }}</span>
+										</li>
+										<li class="info__item">
+											<img src="{% static 'img/layout/general/disease.png'%}" alt="">
+											<span>{% for diag in diagnosis %}{{ diag.diagnosis.name }}; {% endfor %}</span>
+										</li>
+										<li class="info__item">
+											<img src="{% static 'img/layout/general/mkb10.png'%}" alt="">
+											<span>{% for diag in diagnosis %}{{ diag.diagnosis.mkb10 }}; {% endfor %}</span>
+										</li>
+										<li class="info__item">
+											<img src="{% static 'img/layout/general/patient.png'%}" alt="">
+											<span>{{ protocol.patient.name }}</span>
+										</li>
+									</ul>
+					
+									<div class="quality">
+										<div class="quality__title">Качество назначений</div>
+										<div class="quality__inline">
+											<div class="quality__list">
+												<div class="quality__item quality__green">
+													<div class="quality__status"></div>
+													<div class="quality__subtitle">Корректные назначения</div>
+												</div>
+												<div class="quality__item quality__red">
+													<div class="quality__status"></div>
+													<div class="quality__subtitle">Лишние назначения</div>
+												</div>
+												<div class="quality__item quality__yellow">
+													<div class="quality__status"></div>
+													<div class="quality__subtitle">Недостающие назначения</div>
+												</div>
+												<div class="quality__item quality__gray">
+													<div class="quality__status"></div>
+													<div class="quality__subtitle">Все назначения</div>
+												</div>
+											</div>
+											<div class="diagramm">
+                                                <svg width="100%" height="100%" viewBox="0 0 36 36" class="donut">
+                                                              <circle class="donut-hole" cx="18" cy="18" r="15.91549430918954" fill="#fff"></circle>
+                                                              <circle class="donut-ring" cx="18" cy="18" r="15.91549430918954" fill="#d2d3d4" stroke="#d2d3d4" stroke-width="3"></circle>EAE8B5
+
+                                                              <circle id="part1" class="donut-segment" cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#EAE8B5" stroke-width="3" stroke-dasharray="{{ circleparam.0.0 }} {{ circleparam.0.1 }}" stroke-dashoffset="{{ circleparam.0.2 }}"></circle>
+                                                              <circle id='part2' class="donut-segment" cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#EAB5B5" stroke-width="3" stroke-dasharray="{{ circleparam.1.0 }} {{ circleparam.1.1 }}" stroke-dashoffset="{{ circleparam.1.2 }}"></circle>
+                                                              <circle id='part3' class="donut-segment" cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#B5EAC1" stroke-width="3" stroke-dasharray="{{ circleparam.2.0 }} {{ circleparam.2.1 }}" stroke-dashoffset="{{ circleparam.2.2 }}"></circle>
+                                                              <!-- unused 10% -->
+                                                                <circle class="donut-hole" cx="18" cy="18" r="15.91549430918954" fill="#fff"></circle>
+                                                              <g id="textpart1" class="chart-text" style="display: none">
+                                                                <text x="50%" y="50%" class="chart-number">
+                                                                   <tspan fill="#EAE8B5">{{ circleparam.3.0 }}</tspan>/{{ circleparam.3.3 }}
+                                                                </text>
+                                                              </g>
+                                                                  <g id="textpart2" class="chart-text" style="display: none">
+                                                                <text x="50%" y="50%" class="chart-number">
+                                                                   <tspan fill="#EAB5B5">{{ circleparam.3.1 }}</tspan>/{{ circleparam.3.3 }}
+                                                                </text>
+                                                              </g>
+                                                                  <g id="textpart3" class="chart-text" style="display: none">
+                                                                <text x="50%" y="50%" class="chart-number">
+                                                                   <tspan fill="#B5EAC1">{{ circleparam.3.2 }}</tspan>/{{ circleparam.3.3 }}
+                                                                </text>
+                                                              </g>
+                                                            </svg>
+											</div>
+										</div>
+										
+									</div>
+								</div>
+					
+								<div class="info__main">
+									<div class="info__tab tabs">
+										<div class="info__tab-list tabs__list">
+											<a class="tabs__link info__tab-link tabs__link--active" href="#tab1">
+												Аналитика назначений
+												
+											</a>
+											<a class="tabs__link info__tab-link" href="#tab2">
+												Стандарты назначений
+											</a>
+											<a class="tabs__link info__tab-link" href="#tab3">
+												Назначения врача
+											</a>
+										</div>
+										<div class="info__tab-content tabs__inner">
+											<div id="tab1" class="tabs__content info__tab-item tabs__content--active">
+												<!-- Swiper -->
+												<div class="info__swiper">
+													<div class="swiper-wrapper">
+                                                        {% for page in divided_list %}
+														<div class="swiper-slide">
+															<div class="assignment">
+																<div class="assignment__section">
+																	<div class="assignment__list">
+                                                                        {% for pr in page %}
+                                                                            {% if pr.0 == '01' %}
+                                                                                <div class="assignment__title">Лишние назначения:</div>
+                                                                            {% elif pr.0 == '02' %}
+                                                                                <div class="assignment__title">Недостающие назначения:</div>
+                                                                            {% elif pr.0 == '03' %}
+                                                                                <div class="assignment__title">Корректные назначения:</div>
+                                                                            {% endif %}
+																		<div class="assignment__item">
+                                                                            {% if pr.0 == '1' or pr.0 == '01' %}
+                                                                            <img src="{% static 'img/layout/general/warring-red.png'%}" alt="">
+                                                                            {% elif pr.0 == '2' or pr.0 == '02' %}
+                                                                               <img src="{% static 'img/layout/general/question-brown.png'%}" alt="">
+                                                                            {% elif pr.0 == '3' or pr.0 == '03' %}
+                                                                                <img src="{% static 'img/layout/general/check-gray.png'%}" alt="">
+                                                                            {% endif %}
+																			<div class="assignment__main">
+																				<div class="assignment__subtitle">{{pr.1.prescription.nmu_code}}</div>
+																				<div class="assignment__desc">{{pr.1.prescription.name_base}}</div>
+																			</div>
+																		</div>
+                                                                            {% endfor %}
+																	</div>
+																</div>
+															</div>
+														</div>
+                                                        {% endfor %}
+
+													</div>
+													<!-- Add Arrows -->
+													<div class="info__controls">
+														<div class="swiper-button-prev"></div>
+														<div class="swiper-button-next"></div>
+										    		</div>
+										    		<div class="swiper-pagination"></div>
+												</div>
+											</div>
+											<div id="tab2" class="tabs__content info__tab-item">
+												<!-- Swiper -->
+												<div class="info__swiper">
+													<div class="swiper-wrapper">
+
+                                                                   {% for page in divided_list_standart %}
+														<div class="swiper-slide">
+															<div class="assignment">
+																<div class="assignment__section">
+																	<div class="assignment__list">
+                                                                        {% for pr in page %}
+                                                                            {% if pr.0 == '01' %}
+                                                                                <div class="assignment__title">Обязательные назначения:</div>
+                                                                            {% elif pr.0 == '02' %}
+                                                                                <div class="assignment__title">Дополнительные назначения:</div>
+                                                                            {% endif %}
+																		<div class="assignment__item">
+                                                                        <a href="{{ pr.1.medical_standart.urled }}" target="_blank"><img src="{% static 'img/layout/general/list.png'%}" alt=""></a>
+
+																			<div class="assignment__main">
+																				<div class="assignment__subtitle">{{pr.1.prescription.nmu_code}}</div>
+																				<div class="assignment__desc">{{pr.1.prescription.name_base}}</div>
+																			</div>
+																		</div>
+                                                                            {% endfor %}
+																	</div>
+																</div>
+															</div>
+														</div>
+                                                        {% endfor %}
+
+
+
+													</div>
+													<!-- Add Arrows -->
+													<div class="info__controls">
+														<div class="swiper-button-prev"></div>
+														<div class="swiper-button-next"></div>
+										    		</div>
+										    		<div class="swiper-pagination"></div>
+												</div>
+											</div>
+											<div id="tab3" class="tabs__content info__tab-item ">
+												<!-- Swiper -->
+												<div class="info__swiper">
+													<div class="swiper-wrapper">
+                                                                                                        {% for page in divided_list_real %}
+														<div class="swiper-slide">
+															<div class="assignment">
+																<div class="assignment__inner">
+                                                                    {% for pr in page %}
+																	<div class="assignment__check assignment__{% if pr.is_excess and not pr.is_checked%}red{% elif pr.is_excess and pr.is_checked%}gray{% elif not pr.is_excess %}green{% endif %}">
+																		<input id="confirm{{ pr.protocol_prescription_real_id }}" type="checkbox" name="confirm{{ pr.protocol_prescription_real_id }}" value="confirm{{ pr.protocol_prescription_real_id }}" class="checkbox" {% if pr.is_checked %}checked{% endif %}>
+																		<label for="confirm{{ pr.protocol_prescription_real_id }}">
+																			<div class="assignment__head">
+																				<div class="assignment__status"></div>
+																				<div class="assignment__name">{% if pr.show_nmu %}{{ pr.prescription.nmu_code }}{% else %}-{% endif %}</div>
+																			</div>
+																			<div class="assignment__desc">{{ pr.real_text }}</div>
+																		</label>
+																	</div>
+                                                                        {% endfor %}
+
+																</div>
+															</div>
+														</div>
+                                                        {% endfor %}
+
+
+
+													</div>
+													<!-- Add Arrows -->
+													<div class="info__controls">
+														<div class="swiper-button-prev"></div>
+														<div class="swiper-button-next"></div>
+										    		</div>
+										    		<div class="swiper-pagination"></div>
+												</div>
+											</div>
+											
+										</div>
+							      	</div>
+								</div>
+					
+								<div class="info__right">
+									<a href="#" class="info__confirm button button-white">Обоснования</a>
+					
+									<div class="info__upload">
+										<label class="upload__label">
+                                            {% if protocol.has_justification %}<a href="{% get_media_prefix %}{{ protocol.justification }}" download="Обоснование протокола №{{ protocol.protocol_id }}"><img src="{% static 'img/layout/general/upload-done.png'%}" alt=""></a>{% else %}
+                                                <img src="{% static 'img/layout/general/upload.png'%}" alt="">
+                                            {% endif %}
+
+										  <input {% if protocol.has_justification %}disabled{% endif %} type="file" name="reasons" class="upload__input">
+								  		</label>  
+							  		</div>
+                                <input type="hidden" value="" id="actiontype" name="actiontype">
+					
+							  		<button onclick="confirmorcancel('cancel')" id="butcancel" type="button" class="info__btn info__decline button button-pink">Опровергнуть</button>
+					
+							  		<button onclick="confirmorcancel('confirm')" id="butconfirm" type="button" class="info__btn button button-blue">Подвердить</button>
+								</div>
+							</form>
+						</div>
+					</section>
+				</main>
+			</div>
+		</div>
+
+
+	</div>
+	<link rel="stylesheet" type="text/css" href="{% static 'lib/swiper/swiper-bundle.min.css'%}">
+	
+	<script src="{% static 'lib/jquery-3.6.3.min.js'%}"></script>
+	<script defer src="{% static 'lib/swiper/swiper-bundle.min.js'%}"></script>
+	<script defer src="{% static 'js/main.js'%}"></script>
+
+    <script>
+        function confirmorcancel(action){
+        document.getElementById('actiontype').value=action
+            document.getElementById('form1').submit()
+        }
+    </script>
+
+<script>
+
+
+    el1 = document.getElementById('part1')
+    el1.addEventListener('mouseover',function() { handleMouseOver('1'); } );
+    el1.addEventListener('mouseout', function() { handleMouseOut('1'); } );
+
+
+    el2 = document.getElementById('part2')
+    el2.addEventListener('mouseover',function() { handleMouseOver('2'); } );
+    el2.addEventListener('mouseout', function() { handleMouseOut('2'); } );
+
+    el3 = document.getElementById('part3')
+    el3.addEventListener('mouseover',function() { handleMouseOver('3'); } );
+    el3.addEventListener('mouseout', function() { handleMouseOut('3'); } );
+
+
+
+// Define the hover event handler
+function handleMouseOver(extraid) {
+  // Code to execute when the element is hovered over
+    document.getElementById('textpart1').style.display = 'none'
+    document.getElementById('textpart2').style.display = 'none'
+    document.getElementById('textpart3').style.display = 'none'
+
+    let textid= 'textpart' + extraid
+    document.getElementById(textid).style.display = 'block'
+  // Add your desired actions here
+}
+
+function handleMouseOut(extraid) {
+
+  // Code to execute when the mouse leaves the element
+
+    let textid= 'textpart' + extraid
+
+   document.getElementById(textid).style.display = 'none'
+}
+</script>
+
+</body>
+</html>

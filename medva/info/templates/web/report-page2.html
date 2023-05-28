@@ -1,0 +1,791 @@
+{% load static %}
+{% load looker_extra %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<!-- Переключение IE в последнию версию, на случай если в настройках пользователя стоит меньшая -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<!-- Адаптирование страницы для мобильных устройств -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- Запрет распознования номера телефона -->
+	<meta name="format-detection" content="telephone=no">
+	<meta name="SKYPE_TOOLBAR" content ="SKYPE_TOOLBAR_PARSER_COMPATIBLE">
+
+	<!-- Заголовок страницы -->
+	<title>МЕДВА</title>
+
+	<!-- Данное значение часто используют(использовали) поисковые системы -->
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+
+	<!-- Традиционная иконка сайта, размер 16x16, прозрачность поддерживается. Рекомендуемый формат: .ico или .png -->
+	<link rel="shortcut icon" href="{% static 'img/layout/general/favicon.ico'%}">
+
+	<!-- Подключение файлов стилей -->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
+    <style>
+        .record__table{
+                min-height: 65vh;
+        }
+        .wrapper::before {
+    z-index: 5;
+}
+        .table .target__item {
+    margin-right: 20px;
+}
+
+        /*the container must be positioned relative:*/
+.autocomplete {
+  position: relative;
+  display: inline-block;
+}
+
+
+input[type=text] {
+  background-color: #f1f1f1;
+  width: 100%;
+}
+
+input[type=submit] {
+  background-color: DodgerBlue;
+  color: #fff;
+      cursor: pointer;
+}
+
+.autocomplete-items {
+  position: absolute;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+    left: 0px;
+  right: 0;
+    border-radius: 5px;
+    background: #f0f0f0
+}
+
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff;
+  border-bottom: 1px solid #d4d4d4;
+    border-radius: 10px;
+    padding-left: 50px;
+        margin-top: 2px;
+}
+
+/*when hovering an item:*/
+.autocomplete-items div:hover {
+  background-color: #e9e9e9;
+}
+
+/*when navigating through the items using the arrow keys:*/
+.autocomplete-active {
+  background-color: #1e90ff57 !important;
+  color: #ffffff;
+}
+.boldsub {
+    font-weight:bold;
+    color: #39f;
+}
+        .chosen{
+                border: 3px solid #CCFEB3;
+        }
+
+         .result::-webkit-scrollbar {
+            width: 16px;
+        }
+
+        .result::-webkit-scrollbar-track {
+            background-color: transparent;
+            border: 0;
+        }
+
+        .result::-webkit-scrollbar-thumb {
+            border-radius: 8px;
+          border: 3px solid transparent;
+           background-clip: content-box;
+            background: linear-gradient(135.2deg, #ccfeb34a 0%, rgb(136 215 204 / 35%) 112.31%);
+        }
+
+
+    </style>
+</head>
+<body>
+	<div class="inner" >
+		<div class="wrapper">
+			<!-- Nav-->
+			<nav class="nav">
+				<a href="{% url 'main'%}" class="logo">
+					<img src="{% static 'img/layout/general/logo.svg'%}" alt="">
+				</a>
+				<ul class="nav__list">
+					<li class="nav__item">
+						<a href="{% url 'protocollistviewtotal'%}">Протоколы</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'makekitprotocol' %}">Загрузить протоколы</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'newreport'%}">Создать отчет</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'archive'%}">Архив отчетов</a>
+					</li>
+				</ul>
+			
+				<a href="" class="nav__exit">Выйти</a>
+			</nav>
+			<div class="wrap">
+				<!-- Header-->
+				<header class="header header-small">
+					<div class="content">
+						<div class="header__inline">
+				
+							<a href="" class="account">
+								<div class="account__person">Иван Иванович</div>
+								<div class="account__img">
+									<img src="{% static 'img/content/general/profile.jpg'%}" alt="">
+								</div>
+							</a>
+						</div>
+					</div>
+				</header>
+				<main class="main">
+					<!-- record-->
+					<section class="record report-inside">
+						<div class="content">
+
+                    {% csrf_token %}
+
+							<h1 class="record__title page-title">
+                               Протоколы</h1>
+					        <form id="findit" autocomplete="off">
+							<div class="record__tab tabs">
+								<div class="record__tab-list tabs__list">
+									<a class="tabs__link record__tab-link tabs__link--active" href="#tab1">
+										<img src="{% static 'img/layout/general/plus.png'%}" alt="">
+										<span>Отделения</span>
+									</a>
+									<a class="tabs__link recordo__tab-link" href="#tab2">
+										<img src="{% static 'img/layout/general/doctor.png'%}" alt="">
+										<span>Врачи</span>
+									</a>
+									<a class="tabs__link record__tab-link" href="#tab3">
+										<img src="{% static 'img/layout/general/label.png'%}" alt="">
+										<span>Специальности</span>
+									</a>
+									<a class="tabs__link record__tab-link" href="#tab4">
+										<img src="{% static 'img/layout/general/calendar.png'%}" alt="">
+										<span>Даты</span>
+									</a>
+									<a class="tabs__link record__tab-link {% if lacksearch == 'true'%}chosen{% endif %}" onclick="golack()">
+										<img src="{% static 'img/layout/general/warring.png'%}" alt="">
+										<span>Недостающие назначения</span>
+									</a>
+									<a class="tabs__link record__tab-link {% if excesssearch == 'true'%}chosen{% endif %}" onclick="goexcess()">
+										<img src="{% static 'img/layout/general/question.png'%}" alt="">
+										<span>Лишние назначения</span>
+									</a>
+								</div>
+					
+								<div class="record__tab-content tabs__inner">
+                                    <div class="record__table">
+											<div class="table">
+												<div class="table__head">
+													<div class="table__item table__doctor">Врач</div>
+													<div class="table__item table__date">Дата</div>
+													<div class="table__item table__post">Специальность</div>
+													<div class="table__item table__id">МКБ</div>
+													<div class="table__item table__pacient">Пациент</div>
+													<div class="table__item table__target">Назначения</div>
+												</div>
+					                            {% for row in protocol_list %}
+												<a href="{% url 'protocolview' row.0.protocol_id%}" class="table__row">
+													<div class="table__item table__doctor">{{ row.0.doctor.name }}</div>
+													<div class="table__item table__date">{{ row.0.consultation_date }}</div>
+													<div class="table__item table__post">{{ row.0.specialization.name }}</div>
+													<div class="table__item table__id">{{ row.1.diagnosis.mkb10 }}</div>
+													<div class="table__item table__pacient">{{ row.0.patient.id }}</div>
+													<div class="table__item table__target">
+														<div class="target">
+                                                            {% if row.0.index3  %}
+															<div class="target__item target__green">
+																<div class="target__status"></div>
+																<div class="target__value">{{ row.0.index3 }}</div>
+															</div>
+                                                            {% endif %}
+                                                            {% if row.0.index1  %}
+															<div class="target__item target__red">
+																<div class="target__status"></div>
+																<div class="target__value">{{ row.0.index1 }}</div>
+															</div>
+                                                            {% endif %}
+                                                            {% if row.0.index2  %}
+															<div class="target__item target__yellow">
+																<div class="target__status"></div>
+																<div class="target__value">{{ row.0.index2 }}</div>
+															</div>
+                                                        {% endif %}
+														</div>
+													</div>
+												</a>
+                                                {% endfor %}
+
+											</div>
+										</div>
+									<div id="tab1" class="tabs__content info__tab-item tabs__content--active">
+										<div class="filter">
+											<div class="filter__search ">
+                                                <div class="autocomplete" style="width: 100%">
+												<input name="searchcat1" type="search" id="searchcat" placeholder="Поиск">
+												<input name="depart" type="hidden" id="departhid" value="{{departsearch}}">
+                                                  </div>
+											</div>
+
+											<div class="result" style="max-height: 25vh; overflow-y: scroll">
+                                                {% featurelist departsearch as features %}
+                                                {% for feature in features %}
+												<div class="result__item">{{ feature }}</div>
+                                                {% endfor %}
+											</div>
+										</div>
+									</div>
+									<div id="tab2" class="tabs__content info__tab-item">
+                                        <div class="filter">
+											<div class="filter__search ">
+                                                <div class="autocomplete" style="width: 100%">
+												<input name="searchcat2" type="search" id="searchcat2" placeholder="Поиск">
+												<input name="doctor" type="hidden" id="doctorhid" value="{{doctorsearch}}">
+                                                  </div>
+											</div>
+
+											<div class="result" style="max-height: 25vh; overflow-y: scroll">
+                                                {% featurelist doctorsearch as features %}
+                                                {% for feature in features %}
+												<div class="result__item">{{ feature }}</div>
+                                                {% endfor %}
+											</div>
+										</div>
+									</div>
+									<div id="tab3" class="tabs__content info__tab-item ">
+                                        <div class="filter">
+											<div class="filter__search ">
+                                                <div class="autocomplete" style="width: 100%">
+												<input name="searchcat3" type="search" id="searchcat3" placeholder="Поиск">
+												<input name="spec" type="hidden" id="spechid" value="{{specsearch}}">
+                                                  </div>
+											</div>
+
+											<div class="result" style="max-height: 25vh; overflow-y: scroll">
+                                                {% featurelist specsearch as features %}
+                                                {% for feature in features %}
+												<div class="result__item">{{ feature }}</div>
+                                                {% endfor %}
+											</div>
+										</div>
+									</div>
+									<div id="tab4" class="tabs__content info__tab-item ">
+
+									</div>
+									<div id="tab5" class="tabs__content info__tab-item ">
+										<input id="lack" type="hidden" name="lack" value="{{ lacksearch }}">
+										<input id="lackchange" type="hidden" name="lackchange" value="false">
+									</div>
+									<div id="tab6" class="tabs__content info__tab-item ">
+										<input id="excess" type="hidden" name="excess" value="{{ excesssearch }}">
+										<input id="excesschange" type="hidden" name="excesschange" value="false">
+									</div>
+									<input id="creqtereport" type="hidden" name="creqtereport" value="">
+								</div>
+							</div>
+					</form>
+							<div class="record__bottom">
+								<div class="record__inner">
+							<ul class="pagination">
+                                    {% if protocol_list.has_previous %}
+                                        {% if protocol_list.previous_page_number != 1 %}
+                                        <li class="pagination__item">
+										<a href="?page=1">1</a>
+									    </li>
+                                        <li class="pagination__item">
+										...
+									</li>
+                                            {% endif %}
+                                        <li class="pagination__item">
+										<a href="?page={{ protocol_list.previous_page_number }}">{{ protocol_list.previous_page_number }}</a>
+									    </li>
+                                    {% endif %}
+									<li class="pagination__item pagination__active">
+										<a href="?page={{ protocol_list.number }}">{{ protocol_list.number }}</a>
+									</li>
+                                 {% if protocol_list.has_next %}
+                                        {% if protocol_list.next_page_number != protocol_list.paginator.num_pages %}
+                                        <li class="pagination__item">
+										<a href="?page={{ protocol_list.next_page_number }}">{{ protocol_list.next_page_number }}</a>
+									    </li>
+                                        <li class="pagination__item">
+										...
+									</li>
+                                            {% endif %}
+                                        <li class="pagination__item">
+										<a href="?page={{ protocol_list.paginator.num_pages }}">{{ protocol_list.paginator.num_pages }}</a>
+									    </li>
+                                    {% endif %}
+								</ul>
+
+								</div>	
+							</div>
+						</div>
+					</section>
+				</main>
+			</div>
+		</div>
+
+
+	</div>
+	<link rel="stylesheet" type="text/css" href="{% static 'lib/swiper/swiper-bundle.min.css'%}">
+
+	<script src="{% static 'lib/jquery-3.6.3.min.js'%}"></script>
+	<script defer src="{% static 'lib/swiper/swiper-bundle.min.js'%}"></script>
+	<script defer src="{% static 'js/main.js'%}"></script>
+
+
+<script>
+    function autocomplete(inp) {
+  /*the autocomplete function takes two arguments,
+  the text field element and an array of possible autocompleted values:*/
+  var currentFocus;
+  var form1 = document.getElementById("findit");
+  /*execute a function when someone writes in the text field:*/
+  inp.addEventListener("input", function(e) {
+      var a, b, i, val = this.value;
+      /*close any already open lists of autocompleted values*/
+      closeAllLists();
+          $.ajax({
+        type:'POST',
+        url:'{% url "filterdep" %}',
+        data:{
+            product: e.target.value,
+            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            action: 'filter',
+            clinic: 1
+        },
+               async: false,
+        success:function(myjson){
+            {#console.log(myjson); // provide a bit more info about the error to the console#}
+            countries = (myjson['data']);
+        },
+        error : function(xhr,errmsg,err) {
+        console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+    }
+    });
+      var arr = JSON.parse(countries)
+      console.log(arr);
+      if (!val) { return false;}
+      currentFocus = -1;
+      /*create a DIV element that will contain the items (values):*/
+      a = document.createElement("DIV");
+      a.setAttribute("id", this.id + "autocomplete-list");
+      a.setAttribute("class", "autocomplete-items");
+      /*append the DIV element as a child of the autocomplete container:*/
+      this.parentNode.appendChild(a);
+        const subs = val.split(" ");
+      /*for each item in the array...*/
+      for (i = 0; i < arr.length; i++) {
+        /*check if the item starts with the same letters as the text field value:*/
+
+          /*create a DIV element for each matching element:*/
+          b = document.createElement("DIV");
+          /*make the matching letters bold:*/
+          b.innerHTML = arr[i][0];
+                    for (zz = 0; zz <  subs.length; zz++) {
+                        if(! "<span class=\"boldsub\"/>".includes(subs[zz]))
+                       b.innerHTML =  b.innerHTML.replace(subs[zz].toLowerCase(), "<span class=\"boldsub\">" + subs[zz].toLowerCase() + "</span>")
+                    }
+          /*insert a input field that will hold the current array item's value:*/
+          b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+          /*execute a function when someone clicks on the item value (DIV element):*/
+              b.addEventListener("click", function(e) {
+              /*insert the value for the autocomplete text field:*/
+              inp.value = this.getElementsByTagName("input")[0].value;
+              /*close the list of autocompleted values,
+              (or any other open lists of autocompleted values:*/
+              closeAllLists();
+              {#document.getElementById('departhid').value = document.getElementById('departhid').value+";"+inp.value#}
+                      document.getElementById('excesschange').value= 'false';
+    document.getElementById('lackchange').value= 'false';
+              form1.submit();
+              {#    console.log(form1)#}
+          });
+          a.appendChild(b);
+
+      }
+  });
+  /*execute a function presses a key on the keyboard:*/
+  inp.addEventListener("keydown", function(e) {
+      var x = document.getElementById(this.id + "autocomplete-list");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        /*If the arrow DOWN key is pressed,
+        increase the currentFocus variable:*/
+        currentFocus++;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 38) { //up
+        /*If the arrow UP key is pressed,
+        decrease the currentFocus variable:*/
+        currentFocus--;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 13) {
+        /*If the ENTER key is pressed, prevent the form from being submitted,*/
+        e.preventDefault();
+        if (currentFocus > -1) {
+          /*and simulate a click on the "active" item:*/
+          if (x) x[currentFocus].click();
+        }
+      }
+  });
+  function addActive(x) {
+    /*a function to classify an item as "active":*/
+    if (!x) return false;
+    /*start by removing the "active" class on all items:*/
+    removeActive(x);
+    if (currentFocus >= x.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = (x.length - 1);
+    /*add class "autocomplete-active":*/
+    x[currentFocus].classList.add("autocomplete-active");
+  }
+  function removeActive(x) {
+    /*a function to remove the "active" class from all autocomplete items:*/
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.remove("autocomplete-active");
+    }
+  }
+  function closeAllLists(elmnt) {
+    /*close all autocomplete lists in the document,
+    except the one passed as an argument:*/
+    var x = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < x.length; i++) {
+      if (elmnt != x[i] && elmnt != inp) {
+      x[i].parentNode.removeChild(x[i]);
+    }
+  }
+}
+/*execute a function when someone clicks in the document:*/
+document.addEventListener("click", function (e) {
+    closeAllLists(e.target);
+});
+}
+</script>
+
+
+
+
+<script>autocomplete(document.getElementById("searchcat"));</script>
+
+
+<script>
+    function autocomplete2(inp) {
+  /*the autocomplete function takes two arguments,
+  the text field element and an array of possible autocompleted values:*/
+  var currentFocus;
+  var form1 = document.getElementById("findit");
+  /*execute a function when someone writes in the text field:*/
+  inp.addEventListener("input", function(e) {
+      var a, b, i, val = this.value;
+      /*close any already open lists of autocompleted values*/
+      closeAllLists();
+          $.ajax({
+        type:'POST',
+        url:'{% url "filterdoc" %}',
+        data:{
+            product: e.target.value,
+            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            action: 'filter',
+            clinic: 1
+        },
+               async: false,
+        success:function(myjson){
+            {#console.log(myjson); // provide a bit more info about the error to the console#}
+            countries = (myjson['data']);
+        },
+        error : function(xhr,errmsg,err) {
+        console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+    }
+    });
+      var arr = JSON.parse(countries)
+      console.log(arr);
+      if (!val) { return false;}
+      currentFocus = -1;
+      /*create a DIV element that will contain the items (values):*/
+      a = document.createElement("DIV");
+      a.setAttribute("id", this.id + "autocomplete-list");
+      a.setAttribute("class", "autocomplete-items");
+      /*append the DIV element as a child of the autocomplete container:*/
+      this.parentNode.appendChild(a);
+        const subs = val.split(" ");
+      /*for each item in the array...*/
+      for (i = 0; i < arr.length; i++) {
+        /*check if the item starts with the same letters as the text field value:*/
+
+          /*create a DIV element for each matching element:*/
+          b = document.createElement("DIV");
+          /*make the matching letters bold:*/
+          b.innerHTML = arr[i][0];
+                    for (zz = 0; zz <  subs.length; zz++) {
+                        if(! "<span class=\"boldsub\"/>".includes(subs[zz]))
+                       b.innerHTML =  b.innerHTML.replace(subs[zz].toLowerCase(), "<span class=\"boldsub\">" + subs[zz].toLowerCase() + "</span>")
+                    }
+          /*insert a input field that will hold the current array item's value:*/
+          b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+          /*execute a function when someone clicks on the item value (DIV element):*/
+              b.addEventListener("click", function(e) {
+              /*insert the value for the autocomplete text field:*/
+              inp.value = this.getElementsByTagName("input")[0].value;
+              /*close the list of autocompleted values,
+              (or any other open lists of autocompleted values:*/
+              closeAllLists();
+              {#document.getElementById('departhid').value = document.getElementById('departhid').value+";"+inp.value#}
+                      document.getElementById('excesschange').value= 'false';
+    document.getElementById('lackchange').value= 'false';
+              form1.submit();
+              {#    console.log(form1)#}
+          });
+          a.appendChild(b);
+
+      }
+  });
+  /*execute a function presses a key on the keyboard:*/
+  inp.addEventListener("keydown", function(e) {
+      var x = document.getElementById(this.id + "autocomplete-list");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        /*If the arrow DOWN key is pressed,
+        increase the currentFocus variable:*/
+        currentFocus++;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 38) { //up
+        /*If the arrow UP key is pressed,
+        decrease the currentFocus variable:*/
+        currentFocus--;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 13) {
+        /*If the ENTER key is pressed, prevent the form from being submitted,*/
+        e.preventDefault();
+        if (currentFocus > -1) {
+          /*and simulate a click on the "active" item:*/
+          if (x) x[currentFocus].click();
+        }
+      }
+  });
+  function addActive(x) {
+    /*a function to classify an item as "active":*/
+    if (!x) return false;
+    /*start by removing the "active" class on all items:*/
+    removeActive(x);
+    if (currentFocus >= x.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = (x.length - 1);
+    /*add class "autocomplete-active":*/
+    x[currentFocus].classList.add("autocomplete-active");
+  }
+  function removeActive(x) {
+    /*a function to remove the "active" class from all autocomplete items:*/
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.remove("autocomplete-active");
+    }
+  }
+  function closeAllLists(elmnt) {
+    /*close all autocomplete lists in the document,
+    except the one passed as an argument:*/
+    var x = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < x.length; i++) {
+      if (elmnt != x[i] && elmnt != inp) {
+      x[i].parentNode.removeChild(x[i]);
+    }
+  }
+}
+/*execute a function when someone clicks in the document:*/
+document.addEventListener("click", function (e) {
+    closeAllLists(e.target);
+});
+}
+</script>
+
+
+
+
+<script>autocomplete2(document.getElementById("searchcat2"));</script>
+
+
+<script>
+    function autocomplete3(inp) {
+  /*the autocomplete function takes two arguments,
+  the text field element and an array of possible autocompleted values:*/
+  var currentFocus;
+  var form1 = document.getElementById("findit");
+  /*execute a function when someone writes in the text field:*/
+  inp.addEventListener("input", function(e) {
+      var a, b, i, val = this.value;
+      /*close any already open lists of autocompleted values*/
+      closeAllLists();
+          $.ajax({
+        type:'POST',
+        url:'{% url "filterspec" %}',
+        data:{
+            product: e.target.value,
+            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            action: 'filter',
+            clinic: 1
+        },
+               async: false,
+        success:function(myjson){
+            {#console.log(myjson); // provide a bit more info about the error to the console#}
+            countries = (myjson['data']);
+        },
+        error : function(xhr,errmsg,err) {
+        console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+    }
+    });
+      var arr = JSON.parse(countries)
+      console.log(arr);
+      if (!val) { return false;}
+      currentFocus = -1;
+      /*create a DIV element that will contain the items (values):*/
+      a = document.createElement("DIV");
+      a.setAttribute("id", this.id + "autocomplete-list");
+      a.setAttribute("class", "autocomplete-items");
+      /*append the DIV element as a child of the autocomplete container:*/
+      this.parentNode.appendChild(a);
+        const subs = val.split(" ");
+      /*for each item in the array...*/
+      for (i = 0; i < arr.length; i++) {
+        /*check if the item starts with the same letters as the text field value:*/
+
+          /*create a DIV element for each matching element:*/
+          b = document.createElement("DIV");
+          /*make the matching letters bold:*/
+          b.innerHTML = arr[i][0];
+                    for (zz = 0; zz <  subs.length; zz++) {
+                        if(! "<span class=\"boldsub\"/>".includes(subs[zz]))
+                       b.innerHTML =  b.innerHTML.replace(subs[zz].toLowerCase(), "<span class=\"boldsub\">" + subs[zz].toLowerCase() + "</span>")
+                    }
+          /*insert a input field that will hold the current array item's value:*/
+          b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+          /*execute a function when someone clicks on the item value (DIV element):*/
+              b.addEventListener("click", function(e) {
+              /*insert the value for the autocomplete text field:*/
+              inp.value = this.getElementsByTagName("input")[0].value;
+              /*close the list of autocompleted values,
+              (or any other open lists of autocompleted values:*/
+              closeAllLists();
+              {#document.getElementById('departhid').value = document.getElementById('departhid').value+";"+inp.value#}
+                  document.getElementById('excesschange').value= 'false';
+                  document.getElementById('lackchange').value= 'false';
+              form1.submit();
+              {#    console.log(form1)#}
+          });
+          a.appendChild(b);
+
+      }
+  });
+  /*execute a function presses a key on the keyboard:*/
+  inp.addEventListener("keydown", function(e) {
+      var x = document.getElementById(this.id + "autocomplete-list");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        /*If the arrow DOWN key is pressed,
+        increase the currentFocus variable:*/
+        currentFocus++;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 38) { //up
+        /*If the arrow UP key is pressed,
+        decrease the currentFocus variable:*/
+        currentFocus--;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 13) {
+        /*If the ENTER key is pressed, prevent the form from being submitted,*/
+        e.preventDefault();
+        if (currentFocus > -1) {
+          /*and simulate a click on the "active" item:*/
+          if (x) x[currentFocus].click();
+        }
+      }
+  });
+  function addActive(x) {
+    /*a function to classify an item as "active":*/
+    if (!x) return false;
+    /*start by removing the "active" class on all items:*/
+    removeActive(x);
+    if (currentFocus >= x.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = (x.length - 1);
+    /*add class "autocomplete-active":*/
+    x[currentFocus].classList.add("autocomplete-active");
+  }
+  function removeActive(x) {
+    /*a function to remove the "active" class from all autocomplete items:*/
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.remove("autocomplete-active");
+    }
+  }
+  function closeAllLists(elmnt) {
+    /*close all autocomplete lists in the document,
+    except the one passed as an argument:*/
+    var x = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < x.length; i++) {
+      if (elmnt != x[i] && elmnt != inp) {
+      x[i].parentNode.removeChild(x[i]);
+    }
+  }
+}
+/*execute a function when someone clicks in the document:*/
+document.addEventListener("click", function (e) {
+    closeAllLists(e.target);
+});
+}
+</script>
+
+
+
+
+<script>autocomplete3(document.getElementById("searchcat3"));</script>
+
+
+<script>
+function golack(){
+    var form1 = document.getElementById("findit");
+    document.getElementById('lackchange').value= 'true'
+    document.getElementById('excesschange').value= 'false'
+    form1.submit()
+}
+</script>
+<script>
+function goexcess(){
+    var form1 = document.getElementById("findit");
+    document.getElementById('excesschange').value= 'true'
+    document.getElementById('lackchange').value= 'false'
+    form1.submit()
+}
+</script>
+
+<script>
+function gocreqtereport(){
+    var form1 = document.getElementById("findit");
+    document.getElementById('excesschange').value= 'false'
+    document.getElementById('lackchange').value= 'false'
+    document.getElementById('creqtereport').value= 'create'
+    form1.submit()
+}
+</script>
+
+</body>
+</html>

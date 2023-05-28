@@ -1,0 +1,36 @@
+stages:
+  - build
+  - deploy
+  
+build:
+  stage: build
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://localhost:2375/
+  image: cr.yandex/yc/metadata-token-docker-helper:0.2
+  services:
+    - docker:19.03.1-dind
+  script:
+    - docker build . -f dockerweb -t cr.yandex/<>/medvaweb:gitlab-$CI_COMMIT_SHORT_SHA
+    - docker push cr.yandex/<>/medvaweb:gitlab-$CI_COMMIT_SHORT_SHA
+    - docker build . -f dockercelery -t cr.yandex/<>/medvacelery:gitlab-$CI_COMMIT_SHORT_SHA
+    - docker push cr.yandex/<>/medvacelery:gitlab-$CI_COMMIT_SHORT_SHA
+    - docker build . -f dockercelerybeat -t cr.yandex/<>/medvacelerybeat:gitlab-$CI_COMMIT_SHORT_SHA
+    - docker push cr.yandex/<>/medvacelerybeat:gitlab-$CI_COMMIT_SHORT_SHA
+
+      
+deploy:
+  image: gcr.io/cloud-builders/kubectl:latest
+  stage: deploy
+  script:
+    - kubectl config set-cluster k8s --server="$KUBE_URL" --insecure-skip-tls-verify=true
+    - kubectl config set-credentials admin --token="$KUBE_TOKEN"
+    - kubectl config set-context default --cluster=k8s --user=admin
+    - kubectl config use-context default
+    - sed -i "s/__VERSION__/gitlab-$CI_COMMIT_SHORT_SHA/" k8sweb.yaml
+    - kubectl apply -f k8sweb.yaml
+    - sed -i "s/__VERSION__/gitlab-$CI_COMMIT_SHORT_SHA/" k8scelery.yaml
+    - kubectl apply -f k8scelery.yaml
+    - sed -i "s/__VERSION__/gitlab-$CI_COMMIT_SHORT_SHA/" k8scelerybeat.yaml
+    - kubectl apply -f k8scelerybeat.yaml

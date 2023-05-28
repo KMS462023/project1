@@ -1,0 +1,163 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<!-- Переключение IE в последнию версию, на случай если в настройках пользователя стоит меньшая -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<!-- Адаптирование страницы для мобильных устройств -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- Запрет распознования номера телефона -->
+	<meta name="format-detection" content="telephone=no">
+	<meta name="SKYPE_TOOLBAR" content ="SKYPE_TOOLBAR_PARSER_COMPATIBLE">
+
+	<!-- Заголовок страницы -->
+	<title>МЕДВА</title>
+
+	<!-- Данное значение часто используют(использовали) поисковые системы -->
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+
+	<!-- Традиционная иконка сайта, размер 16x16, прозрачность поддерживается. Рекомендуемый формат: .ico или .png -->
+	<link rel="shortcut icon" href="{% static 'img/layout/general/favicon.ico'%}">
+
+	<!-- Подключение файлов стилей -->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
+    <style>
+        .wrapper::before {
+    z-index: 5;
+}
+    </style>
+
+</head>
+<body>
+	<div class="inner">
+		<div class="wrapper">
+			<!-- Nav-->
+						<nav class="nav">
+				<a href="{% url 'main'%}" class="logo">
+					<img src="{% static 'img/layout/general/logo.svg'%}" alt="">
+				</a>
+				<ul class="nav__list">
+					<li class="nav__item">
+						<a href="{% url 'protocollistviewtotal'%}">Протоколы</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'makekitprotocol' %}">Загрузить протоколы</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'newreport'%}">Создать отчет</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'archive'%}">Архив отчетов</a>
+					</li>
+				</ul>
+			
+				<a href="" class="nav__exit">Выйти</a>
+			</nav>
+			<div class="wrap">
+				<!-- Header-->
+				<header class="header header-small">
+					<div class="content">
+						<div class="header__inline">
+				
+							<a href="" class="account">
+								<div class="account__person">Иван Иванович</div>
+								<div class="account__img">
+									<img src="{% static 'img/content/general/profile.jpg'%}" alt="">
+								</div>
+							</a>
+						</div>
+					</div>
+				</header>
+				<main class="main">
+					<!-- doctors-->
+					<section class="doctors">
+						<div class="content">
+					
+							<form method="get"  class="doctors__head">
+								<h1 class="doctors__title page-title">Врачи</h1>
+								<div class="page__search">
+									<div class="page__input">
+										<input name="search" type="text">
+									</div>
+									<button class="page__search-btn">
+										<img src="{% static 'img/layout/general/search.png'%}" alt="">
+									</button>
+								</div>
+							</form>
+					
+							<div class="doctors__list">
+                                {% for doctor in cliniclist %}
+								<a href="{% url 'protocollistview' 'department' doctor.0.doctor_id %}" class="doctors__item">
+									<ul class="doctors__sublist">
+										<li class="doctors__subitem">
+											<img src="{% static 'img/layout/general/doctor.png'%}" alt="">
+											<span>{{ doctor.0.name }}</span>
+										</li>
+										<li class="doctors__subitem">
+											<img src="{% static 'img/layout/general/plus.png'%}" alt="">
+											<span>{{ doctor.2}}</span>
+										</li>
+										<li class="doctors__subitem">
+											<img src="{% static 'img/layout/general/label.png'%}" alt="">
+											<span>{{ doctor.1 }}</span>
+										</li>
+										<li class="doctors__subitem">
+											<img src="{% static 'img/layout/general/list.png'%}" alt="">
+											<span>Протокол №{{ doctor.3.protocol_id}} от {{ doctor.3.consultation_date }}</span>
+										</li>
+									</ul>
+								</a>
+					            {% endfor %}
+
+							</div>
+					
+							<ul class="pagination">
+                                    {% if cliniclist.has_previous %}
+                                        {% if cliniclist.previous_page_number != 1 %}
+                                        <li class="pagination__item">
+										<a href="?page=1">1</a>
+									    </li>
+                                        <li class="pagination__item">
+										...
+									</li>
+                                            {% endif %}
+                                        <li class="pagination__item">
+										<a href="?page={{ cliniclist.previous_page_number }}">{{ cliniclist.previous_page_number }}</a>
+									    </li>
+                                    {% endif %}
+									<li class="pagination__item pagination__active">
+										<a href="?page={{ cliniclist.number }}">{{ cliniclist.number }}</a>
+									</li>
+                                 {% if cliniclist.has_next %}
+                                        {% if cliniclist.next_page_number != cliniclist.paginator.num_pages %}
+                                        <li class="pagination__item">
+										<a href="?page={{ cliniclist.next_page_number }}">{{ cliniclist.next_page_number }}</a>
+									    </li>
+                                        <li class="pagination__item">
+										...
+									</li>
+                                            {% endif %}
+                                        <li class="pagination__item">
+										<a href="?page={{ cliniclist.paginator.num_pages }}">{{ cliniclist.paginator.num_pages }}</a>
+									    </li>
+                                    {% endif %}
+								</ul>
+						</div>
+					</section>
+				</main>
+			</div>
+		</div>
+
+
+	</div>
+	<link rel="stylesheet" type="text/css" href="{% static 'lib/swiper/swiper-bundle.min.css'%}">
+	
+	<script src="{% static 'lib/jquery-3.6.3.min.js'%}"></script>
+	<script defer src="{% static 'lib/swiper/swiper-bundle.min.js'%}"></script>
+	<script defer src="{% static 'js/main.js'%}"></script>
+</body>
+</html>

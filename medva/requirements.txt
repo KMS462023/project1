@@ -1,0 +1,44 @@
+pytz
+requests
+python-dotenv
+
+# Django
+Django==3.2.6
+django-timezone-field 
+django-cors-headers
+# whitenoise
+# qrcode[pil]
+pillow
+django-storages==1.9.1
+
+# Django 3.0 async requirements
+gunicorn
+# uvicorn
+# uvloop
+# httptools
+openpyxl
+
+
+# Databases
+#psycopg2-binary
+dj-database-url
+
+
+# Distributed tasks
+celery
+celery[sqs]
+
+django-celery-beat
+
+# Telegram
+
+# db
+psycopg2
+boto3
+redis
+nltk
+pymorphy2
+# monitoring
+# sentry-sdk
+
+# vobject

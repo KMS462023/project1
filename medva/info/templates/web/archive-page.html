@@ -1,0 +1,189 @@
+{% load static %}
+{% load looker_extra %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<!-- Переключение IE в последнию версию, на случай если в настройках пользователя стоит меньшая -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<!-- Адаптирование страницы для мобильных устройств -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- Запрет распознования номера телефона -->
+	<meta name="format-detection" content="telephone=no">
+	<meta name="SKYPE_TOOLBAR" content ="SKYPE_TOOLBAR_PARSER_COMPATIBLE">
+
+	<!-- Заголовок страницы -->
+	<title>МЕДВА</title>
+
+	<!-- Данное значение часто используют(использовали) поисковые системы -->
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+
+	<!-- Традиционная иконка сайта, размер 16x16, прозрачность поддерживается. Рекомендуемый формат: .ico или .png -->
+	<link rel="shortcut icon" href="{% static 'img/layout/general/favicon.ico'%}">
+
+	<!-- Подключение файлов стилей -->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
+    <style>
+        .wrapper::before {
+    z-index: 5;
+}
+        .archive__sublist{
+            min-width: 40%;
+        }
+    </style>
+</head>
+<body>
+	<div class="inner">
+		<div class="wrapper">
+			<!-- Nav-->
+						<nav class="nav">
+				<a href="{% url 'main'%}" class="logo">
+					<img src="{% static 'img/layout/general/logo.svg'%}" alt="">
+				</a>
+				<ul class="nav__list">
+					<li class="nav__item">
+						<a href="{% url 'protocollistviewtotal'%}">Протоколы</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'makekitprotocol' %}">Загрузить протоколы</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'newreport'%}">Создать отчет</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'archive'%}">Архив отчетов</a>
+					</li>
+				</ul>
+			
+				<a href="" class="nav__exit">Выйти</a>
+			</nav>
+			<div class="wrap">
+				<!-- Header-->
+				<header class="header header-small">
+					<div class="content">
+						<div class="header__inline">
+				
+							<a href="" class="account">
+								<div class="account__person">Иван Иванович</div>
+								<div class="account__img">
+									<img src="{% static 'img/content/general/profile.jpg'%}" alt="">
+								</div>
+							</a>
+						</div>
+					</div>
+				</header>
+				<main class="main">
+					<!-- archive-->
+					<section class="archive">
+						<div class="content">
+							<h1 class="archive__title page-title">Архив отчетов</h1>
+					
+							<div class="archive__list">
+
+                                {% for report in reports %}
+								<a href="{% url 'reportview' report.0.report_id %}" class="archive__item">
+									<div class="archive__main">
+										<div class="archive__subtitle">{{ report.0.name }}</div>
+					
+										<div class="account">
+											<div class="account__img">
+												<img src="{% static 'img/content/general/profile.jpg'%}" alt="">
+											</div>
+											<div class="account__person">{{ report.0.clinic.login.first_name }}</div>
+										</div>
+					
+										<div class="archive__date">{{ report.0.when|format_date_archive}}</div>
+									</div>
+									<ul class="archive__sublist">
+                                        {% if report.0.date_list  %}
+										<li class="archive__subitem">
+											<div>Даты: </div>
+											<div>{{ report.0.date_list|shortdesc}}</div>
+										</li>
+                                        {% endif %}
+                                                                            {% if report.2  %}
+										<li class="archive__subitem">
+											<div>Врачи: </div>
+											<div>{{ report.2|shortdesc}}</div>
+										</li>
+                                        {% endif %}
+                                                                            {% if report.1  %}
+										<li class="archive__subitem">
+											<div>Специальности:</div>
+											<div>{{ report.1|shortdesc}}</div>
+										</li>
+                                        {% endif %}
+                                                                            {% if report.3  %}
+										<li class="archive__subitem">
+											<div>Отделения: </div>
+											<div>{{ report.3|shortdesc}}</div>
+										</li>
+                                        {% endif %}
+                                                                            {% if report.0.index1_list == 'true' %}
+										<li class="archive__subitem">
+											<div>Лишние</div>
+
+										</li>
+                                        {% endif %}
+                                                                             {% if report.0.index2_list == 'true' %}
+										<li class="archive__subitem">
+											<div>Недостающие </div>
+
+										</li>
+                                        {% endif %}
+
+									</ul>
+								</a>
+					    {% endfor %}
+
+							</div>
+					
+								<ul class="pagination">
+                                    {% if reports.has_previous %}
+                                        {% if reports.previous_page_number != 1 %}
+                                        <li class="pagination__item">
+										<a href="?page=1">1</a>
+									    </li>
+                                        <li class="pagination__item">
+										...
+									</li>
+                                            {% endif %}
+                                        <li class="pagination__item">
+										<a href="?page={{ reports.previous_page_number }}">{{ reports.previous_page_number }}</a>
+									    </li>
+                                    {% endif %}
+									<li class="pagination__item pagination__active">
+										<a href="?page={{ reports.number }}">{{ reports.number }}</a>
+									</li>
+                                 {% if reports.has_next %}
+                                        {% if reports.next_page_number != reports.paginator.num_pages %}
+                                        <li class="pagination__item">
+										<a href="?page={{ reports.next_page_number }}">{{ reports.next_page_number }}</a>
+									    </li>
+                                        <li class="pagination__item">
+										...
+									</li>
+                                            {% endif %}
+                                        <li class="pagination__item">
+										<a href="?page={{ reports.paginator.num_pages }}">{{ reports.paginator.num_pages }}</a>
+									    </li>
+                                    {% endif %}
+								</ul>
+						</div>
+					</section>
+				</main>
+			</div>
+		</div>
+
+
+	</div>
+	<link rel="stylesheet" type="text/css" href="{% static 'lib/swiper/swiper-bundle.min.css'%}">
+	
+	<script src="{% static 'lib/jquery-3.6.3.min.js'%}"></script>
+	<script defer src="{% static 'lib/swiper/swiper-bundle.min.js'%}"></script>
+	<script defer src="{% static 'js/main.js'%}"></script>
+</body>
+</html>

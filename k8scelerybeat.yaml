@@ -1,0 +1,23 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: medvacelerybeat-deployment
+  labels:
+    app: medvacelerybeat-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: medvacelerybeat-service
+  template:
+    metadata:
+      labels:
+        app: medvacelerybeat-service
+    spec:   
+      containers:
+        - name: medvacelerybeat
+          image: cr.yandex/<>/medvacelerybeat:__VERSION__
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000

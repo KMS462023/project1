@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<!-- Переключение IE в последнию версию, на случай если в настройках пользователя стоит меньшая -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<!-- Адаптирование страницы для мобильных устройств -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- Запрет распознования номера телефона -->
+	<meta name="format-detection" content="telephone=no">
+	<meta name="SKYPE_TOOLBAR" content ="SKYPE_TOOLBAR_PARSER_COMPATIBLE">
+
+	<!-- Заголовок страницы -->
+	<title>МЕДВА</title>
+
+	<!-- Данное значение часто используют(использовали) поисковые системы -->
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+
+	<!-- Традиционная иконка сайта, размер 16x16, прозрачность поддерживается. Рекомендуемый формат: .ico или .png -->
+	<link rel="shortcut icon" href="{% static 'img/layout/general/favicon.ico'%}">
+
+	<!-- Подключение файлов стилей -->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
+</head>
+<body>
+	<div class="inner">
+		<div class="wrapper">
+			<!-- login-->
+			<section class="login">
+				<div class="bg"></div>
+				<div class="content">
+					<h1 class="login__title">ВХОД НА САЙТ</h1>
+			
+					<form method="post" action="{% url 'auth' %}" class="login__form">
+                        {% csrf_token %}
+						<div class="login__input">
+							<input type="text" name="name" placeholder="Логин">{{ user.name }}
+						</div>
+						<div class="login__input">
+							<input type="password" name="password" placeholder="Пароль">{{ user.password }}
+						</div>
+			
+						<button class="login__btn button button-white">Войти</button>
+					</form>
+			
+					<div class="login__bottom">
+						<div class="login__inline">
+							<a href="#" class="login__link">
+								<img src="{% static 'img/layout/general/person.png'%}" alt="">
+								Еще не зарегистрированы?
+							</a>
+							<a href="#" class="login__link">
+								<img src="{% static 'img/layout/general/lock.png'%}" alt="">
+								Забыли пароль?
+							</a>
+						</div>
+						<a href="#" class="logo">
+							<img src="{% static 'img/layout/general/logo.svg'%}" alt="">
+						</a>
+					</div>
+				</div>
+			</section>
+		</div>
+
+
+	</div>
+	<link rel="stylesheet" type="text/css" href="{% static 'lib/swiper/swiper-bundle.min.css'%}">
+	
+	<script src="{% static 'lib/jquery-3.6.3.min.js'%}"></script>
+	<script defer src="{% static 'lib/swiper/swiper-bundle.min.js'%}"></script>
+	<script defer src="{% static 'js/main.js'%}"></script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<!-- Переключение IE в последнию версию, на случай если в настройках пользователя стоит меньшая -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<!-- Адаптирование страницы для мобильных устройств -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- Запрет распознования номера телефона -->
+	<meta name="format-detection" content="telephone=no">
+	<meta name="SKYPE_TOOLBAR" content ="SKYPE_TOOLBAR_PARSER_COMPATIBLE">
+
+	<!-- Заголовок страницы -->
+	<title>МЕДВА</title>
+
+	<!-- Данное значение часто используют(использовали) поисковые системы -->
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+
+	<!-- Традиционная иконка сайта, размер 16x16, прозрачность поддерживается. Рекомендуемый формат: .ico или .png -->
+	<link rel="shortcut icon" href="{% static 'img/layout/general/favicon.ico'%}">
+
+	<!-- Подключение файлов стилей -->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
+</head>
+<body>
+	<div class="inner">
+		<div class="wrapper">
+			<!-- Nav-->
+						<nav class="nav">
+				<a href="{% url 'main'%}" class="logo">
+					<img src="{% static 'img/layout/general/logo.svg'%}" alt="">
+				</a>
+				<ul class="nav__list">
+					<li class="nav__item">
+						<a href="{% url 'protocollistviewtotal'%}">Протоколы</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'makekitprotocol' %}">Загрузить протоколы</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'newreport'%}">Создать отчет</a>
+					</li>
+					<li class="nav__item">
+						<a href="{% url 'archive'%}">Архив отчетов</a>
+					</li>
+				</ul>
+			
+				<a href="" class="nav__exit">Выйти</a>
+			</nav>
+			<div class="wrap">
+				<!-- Header-->
+				<header class="header header-small">
+					<div class="content">
+						<div class="header__inline">
+				
+							<a href="" class="account">
+								<div class="account__person">Иван Иванович</div>
+								<div class="account__img">
+									<img src="{% static 'img/content/general/profile.jpg'%}" alt="">
+								</div>
+							</a>
+						</div>
+					</div>
+				</header>
+				<main class="main">
+					<!-- protocols-->
+					<section class="protocols">
+						<div class="content">
+					
+							<form action="" method="post" enctype="multipart/form-data" class="protocols__form">
+                                {% csrf_token %}
+								<div class="upload">
+									<label class="upload__label">
+										<span class="upload__start upload__item" id="uploadform">
+											<img src="{% static 'img/layout/general/upload.png'%}" alt="">
+										  	<span class="upload__title">Формат xls, csv</span>
+									  	</span>
+					
+									  	<span class="upload__done upload__item" id="uploaddone">
+											<img src="{% static 'img/layout/general/upload-done.png'%}" alt="">
+										  	<span id="uploadname" class="upload__title"></span>
+									  	</span>
+									  <input accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" type="file" name="kit" class="upload__input" onchange="loadFile(event)">
+							  		</label>  
+								</div>
+					
+								<div class="protocols__aside">
+									<h1 class="protocols__title page-title">Протоколы консультаций</h1>
+					
+									<button class="protocols__btn button button-blue">Загрузить</button>
+								</div>
+							</form>
+					
+							<div class="protocols__list">
+								<a href="#" class="protocols__item">
+									<div class="protocols__num">0</div>
+									<div class="protocols__subtitle">Протоколов в файле</div>
+								</a>
+								<a href="#" class="protocols__item">
+									<div class="protocols__num">0</div>
+									<div class="protocols__subtitle">Лишних назначений</div>
+								</a>
+								<a href="#" class="protocols__item">
+									<div class="protocols__num">0</div>
+									<div class="protocols__subtitle">Недостающих назначений</div>
+								</a>
+								<a href="#" class="protocols__item">
+									<div class="protocols__num">0</div>
+									<div class="protocols__subtitle">Количество врачей</div>
+								</a>
+							</div>
+						</div>
+					</section>
+				</main>
+			</div>
+		</div>
+
+
+	</div>
+	<link rel="stylesheet" type="text/css" href="{% static 'lib/swiper/swiper-bundle.min.css'%}">
+
+	<script src="{% static 'lib/jquery-3.6.3.min.js'%}"></script>
+	<script defer src="{% static 'lib/swiper/swiper-bundle.min.js'%}"></script>
+	<script defer src="{% static 'js/main.js'%}"></script>
+
+<script>
+var loadFile = function(event) {
+    document.getElementById('uploadform').style.display='none';
+	document.getElementById('uploaddone').style.display='flex';
+	var filename = document.getElementById('uploadname');
+	filename.innerText = event.target.files[0].name;
+};
+</script>
+
+</body>
+</html>
